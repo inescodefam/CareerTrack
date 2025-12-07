@@ -6,11 +6,11 @@ namespace CareerTrack.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class GoalController : ControllerBase
+    public class ApiGoalController : ControllerBase
     {
         private readonly AppDbContext _context;
 
-        public GoalController(AppDbContext context)
+        public ApiGoalController(AppDbContext context)
         {
             _context = context;
         }
