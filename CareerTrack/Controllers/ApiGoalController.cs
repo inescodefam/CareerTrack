@@ -28,7 +28,7 @@ namespace CareerTrack.Controllers
         [HttpGet("{id}")]
         public IActionResult GetGoal(int id)
         {
-            var goal = _context.Goals.FindAsync(id);
+            var goal = _context.Goals.Find(id);
             if (goal == null)
                 return NotFound();
             return Ok(goal);
@@ -50,7 +50,7 @@ namespace CareerTrack.Controllers
             }
 
             _context.Goals.Add(goal);
-            _context.SaveChangesAsync();
+            _context.SaveChanges();
             return CreatedAtAction(nameof(GetGoal), new { id = goal.Id }, goal);
         }
 
@@ -68,7 +68,7 @@ namespace CareerTrack.Controllers
 
             try
             {
-                _context.SaveChangesAsync();
+                _context.SaveChanges();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -91,7 +91,7 @@ namespace CareerTrack.Controllers
                 return NotFound();
 
             _context.Goals.Remove(goal);
-            _context.SaveChangesAsync();
+            _context.SaveChanges();
             return NoContent();
         }
 

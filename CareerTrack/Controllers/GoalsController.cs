@@ -117,7 +117,7 @@ namespace CareerTrack.Controllers
             if (id == null)
                 return NotFound();
 
-            var goal = _context.Goals.FirstOrDefaultAsync(m => m.Id == id);
+            var goal = _context.Goals.FirstOrDefault(m => m.Id == id);
             if (goal == null)
                 return NotFound();
 
@@ -133,7 +133,7 @@ namespace CareerTrack.Controllers
             if (goal != null)
             {
                 _context.Goals.Remove(goal);
-                _context.SaveChangesAsync();
+                _context.SaveChanges();
             }
             return RedirectToAction(nameof(Index));
         }
