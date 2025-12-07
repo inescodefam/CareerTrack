@@ -49,3 +49,11 @@ Modul mentorstva
 Modul izvještaja i analitike
 
 Administratorski modul
+
+
+####Instructions
+
+## Setup
+1. Configure `appsettings.json`
+2. Update connection
+3. Run migrations: `Update-Database`
