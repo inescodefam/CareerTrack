@@ -53,5 +53,4 @@ Aplikacija je podijeljena na nekoliko modula:
 
 ## Setup
 1. Configure `appsettings.json`
-2. Update connection
-3. Run migrations: `Update-Database`
+2. Run migrations: `Update-Database`
