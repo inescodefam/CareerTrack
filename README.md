@@ -21,34 +21,34 @@ CareerTrack je web aplikacija namijenjena studentima za praćenje njihovih vješ
 🌍 Višejezičnost – podrška za HR/EN
 
 🛡️ Nefunkcionalni zahtjevi
-
-Sigurnost korisničkih podataka (SSL/TLS, zaštita dokumenata)
-
-Ograničenje veličine dokumenata (max 2 MB po certifikatu)
-
-Brz odziv sustava (preporuke < 2s, izvještaji < 5s)
-
-Real-time ažuriranja (<1 sekunda)
-
-HTTPS + 2FA za administratore
+  
+    Sigurnost korisničkih podataka (SSL/TLS, zaštita dokumenata)
+    
+    Ograničenje veličine dokumenata (max 2 MB po certifikatu)
+    
+    Brz odziv sustava (preporuke < 2s, izvještaji < 5s)
+    
+    Real-time ažuriranja (<1 sekunda)
+    
+    HTTPS + 2FA za administratore
 
 📐 Arhitektura i moduli
 
 Aplikacija je podijeljena na nekoliko modula:
 
-Korisnički modul
-
-Modul vještina i certifikata
-
-Modul ciljeva i napretka
-
-Modul preporuka
-
-Modul mentorstva
-
-Modul izvještaja i analitike
-
-Administratorski modul
+    Korisnički modul
+    
+    Modul vještina i certifikata
+    
+    Modul ciljeva i napretka
+    
+    Modul preporuka
+    
+    Modul mentorstva
+    
+    Modul izvještaja i analitike
+    
+    Administratorski modul
 
 
 ## Setup
