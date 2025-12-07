@@ -11,8 +11,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CareerTrack.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251207161941_AddGoalTable")]
-    partial class AddGoalTable
+    [Migration("20251207210739_UpdateGoal")]
+    partial class UpdateGoal
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -33,7 +33,6 @@ namespace CareerTrack.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("character varying(500)");
 
@@ -42,7 +41,7 @@ namespace CareerTrack.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
-                    b.Property<DateTime>("endDate")
+                    b.Property<DateTime?>("endDate")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTime>("startDate")

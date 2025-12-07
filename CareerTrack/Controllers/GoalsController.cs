@@ -47,6 +47,14 @@ namespace CareerTrack.Controllers
         {
             if (ModelState.IsValid)
             {
+                goal.startDate = DateTime.SpecifyKind(goal.startDate, DateTimeKind.Utc);
+                goal.targetDate = DateTime.SpecifyKind(goal.targetDate, DateTimeKind.Utc);
+
+                if (goal.endDate.HasValue)
+                {
+                    goal.endDate = DateTime.SpecifyKind(goal.endDate.Value, DateTimeKind.Utc);
+                }
+
                 _context.Add(goal);
                 _context.SaveChanges();
                 return RedirectToAction(nameof(Index));
@@ -60,7 +68,7 @@ namespace CareerTrack.Controllers
             if (id == null)
                 return NotFound();
 
-            var goal = _context.Goals.FindAsync(id);
+            var goal = _context.Goals.Find(id);
             if (goal == null)
                 return NotFound();
 
@@ -79,8 +87,17 @@ namespace CareerTrack.Controllers
             {
                 try
                 {
+
+                    goal.startDate = DateTime.SpecifyKind(goal.startDate, DateTimeKind.Utc);
+                    goal.targetDate = DateTime.SpecifyKind(goal.targetDate, DateTimeKind.Utc);
+
+                    if (goal.endDate.HasValue)
+                    {
+                        goal.endDate = DateTime.SpecifyKind(goal.endDate.Value, DateTimeKind.Utc);
+                    }
+
                     _context.Update(goal);
-                    _context.SaveChangesAsync();
+                    _context.SaveChanges();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
