@@ -1,0 +1,156 @@
+﻿@model CareerTrack.Models.Goal
+
+@{
+    ViewData["Title"] = "Goal Details";
+    var daysRemaining = (Model.targetDate - DateTime.Now).Days;
+    var isCompleted = Model.endDate != DateTime.MinValue;
+    var progressPercentage = 0;
+
+    if (Model.endDate != DateTime.MinValue && Model.endDate > Model.startDate)
+    {
+        progressPercentage = 100;
+    }
+    else if (Model.targetDate > Model.startDate)
+    {
+        var totalDays = (Model.targetDate - Model.startDate).TotalDays;
+        var elapsedDays = (DateTime.Now - Model.startDate).TotalDays;
+        progressPercentage = (int)Math.Min(100, Math.Max(0, (elapsedDays / totalDays) * 100));
+    }
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <!-- Main Goal Card -->
+            <div class="card shadow-lg mb-4">
+                <div class="card-header bg-primary text-white">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h2 class="mb-0">
+                            <i class="bi bi-bullseye"></i> @Model.Name
+                        </h2>
+                        @if (isCompleted)
+                        {
+                            <span class="badge bg-success fs-6">
+                                <i class="bi bi-check-circle"></i> Completed
+                            </span>
+                        }
+                    </div>
+                </div>
+
+                <div class="card-body">
+                    <!-- Description -->
+                    <div class="mb-4">
+                        <h5 class="text-muted">
+                            <i class="bi bi-card-text"></i> Description
+                        </h5>
+                        <p class="fs-5">
+                            @(string.IsNullOrEmpty(Model.Description) ? "No description provided" : Model.Description)
+                        </p>
+                    </div>
+
+                    <hr>
+
+                    <!-- Timeline -->
+                    <div class="row mb-4">
+                        <div class="col-md-4">
+                            <div class="text-center p-3 bg-light rounded">
+                                <i class="bi bi-calendar-event fs-3 text-primary"></i>
+                                <h6 class="mt-2 text-muted">Start Date</h6>
+                                <p class="fs-5 mb-0">@Model.startDate.ToString("MMM dd, yyyy")</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="text-center p-3 bg-light rounded">
+                                <i class="bi bi-calendar-check fs-3 text-warning"></i>
+                                <h6 class="mt-2 text-muted">Target Date</h6>
+                                <p class="fs-5 mb-0">@Model.targetDate.ToString("MMM dd, yyyy")</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="text-center p-3 bg-light rounded">
+                                @if (isCompleted)
+                                {
+                                    <i class="bi bi-calendar-x fs-3 text-success"></i>
+                                    <h6 class="mt-2 text-muted">Completed</h6>
+                                    <p class="fs-5 mb-0">@Model.endDate.ToString("MMM dd, yyyy")</p>
+                                }
+                                else
+                                {
+                                    <i class="bi bi-hourglass-split fs-3 text-secondary"></i>
+                                    <h6 class="mt-2 text-muted">In Progress</h6>
+                                    <p class="fs-5 mb-0">Not yet</p>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Progress Bar -->
+                    @if (!isCompleted)
+                    {
+                        <div class="mb-4">
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="fw-bold">Progress</span>
+                                <span class="text-muted">@progressPercentage%</span>
+                            </div>
+                            <div class="progress" style="height: 25px;">
+                                <div class="progress-bar progress-bar-striped progress-bar-animated @(progressPercentage >= 75 ? "bg-success" : progressPercentage >= 50 ? "bg-info" : progressPercentage >= 25 ? "bg-warning" : "bg-danger")"
+                                     role="progressbar"
+                                     style="width: @progressPercentage%"
+                                     aria-valuenow="@progressPercentage"
+                                     aria-valuemin="0"
+                                     aria-valuemax="100">
+                                    @progressPercentage%
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Days Remaining Alert -->
+                        @if (daysRemaining > 7)
+                        {
+                            <div class="alert alert-info">
+                                <i class="bi bi-clock-history"></i>
+                                <strong>@daysRemaining days</strong> remaining until target date
+                            </div>
+                        }
+                        else if (daysRemaining > 0)
+                        {
+                            <div class="alert alert-warning">
+                                <i class="bi bi-exclamation-triangle"></i>
+                                <strong>Only @daysRemaining days left!</strong> Time to push hard!
+                            </div>
+                        }
+                        else if (daysRemaining == 0)
+                        {
+                            <div class="alert alert-warning">
+                                <i class="bi bi-alarm"></i>
+                                <strong>Due today!</strong> Final push!
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="alert alert-danger">
+                                <i class="bi bi-x-circle"></i>
+                                <strong>Overdue by @Math.Abs(daysRemaining) days</strong>
+                            </div>
+                        }
+                    }
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="card-footer bg-white">
+                    <div class="d-flex gap-2 flex-wrap">
+                        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning flex-fill">
+                            <i class="bi bi-pencil-square"></i> Edit Goal
+                        </a>
+                        <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger flex-fill">
+                            <i class="bi bi-trash"></i> Delete Goal
+                        </a>
+                        <a asp-action="Index" class="btn btn-outline-secondary flex-fill">
+                            <i class="bi bi-arrow-left"></i> Back to List
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
