@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CareerTrack.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class ApiGoalController : ControllerBase
     {
@@ -15,37 +15,46 @@ namespace CareerTrack.Controllers
             _context = context;
         }
 
-        // GET: api/Goal
+        // GET: goal/goals
         [HttpGet]
+        [Route("goals")]
         public IActionResult GetGoals()
         {
             var goals = _context.Goals.ToList();
             return Ok(goals);
         }
 
-        // GET: api/Goal/5
+        // GET: goal/5
         [HttpGet("{id}")]
         public IActionResult GetGoal(int id)
         {
-            var goal = _context.Goals.FindAsync(id);
+            var goal = _context.Goals.Find(id);
             if (goal == null)
                 return NotFound();
             return Ok(goal);
         }
 
-        // POST: api/Goal
+        // POST: goal
         [HttpPost]
         public IActionResult CreateGoal([FromBody] Goal goal)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
+            goal.startDate = DateTime.SpecifyKind(goal.startDate, DateTimeKind.Utc);
+            goal.targetDate = DateTime.SpecifyKind(goal.targetDate, DateTimeKind.Utc);
+
+            if (goal.endDate.HasValue)
+            {
+                goal.endDate = DateTime.SpecifyKind(goal.endDate.Value, DateTimeKind.Utc);
+            }
+
             _context.Goals.Add(goal);
-            _context.SaveChangesAsync();
+            _context.SaveChanges();
             return CreatedAtAction(nameof(GetGoal), new { id = goal.Id }, goal);
         }
 
-        // PUT: api/Goal/5
+        // PUT: goal/5
         [HttpPut("{id}")]
         public IActionResult UpdateGoal(int id, [FromBody] Goal goal)
         {
@@ -59,7 +68,7 @@ namespace CareerTrack.Controllers
 
             try
             {
-                _context.SaveChangesAsync();
+                _context.SaveChanges();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -72,7 +81,8 @@ namespace CareerTrack.Controllers
             return NoContent();
         }
 
-        // DELETE: api/Goal/5
+
+        // DELETE: goal/5
         [HttpDelete("{id}")]
         public IActionResult DeleteGoal(int id)
         {
@@ -81,7 +91,7 @@ namespace CareerTrack.Controllers
                 return NotFound();
 
             _context.Goals.Remove(goal);
-            _context.SaveChangesAsync();
+            _context.SaveChanges();
             return NoContent();
         }
 

@@ -23,7 +23,7 @@
                 var progressPercentage = 0;
                 if (goal.endDate != DateTime.MinValue && goal.endDate > goal.startDate)
                 {
-                    var totalDays = (goal.endDate - goal.startDate).TotalDays;
+                    var totalDays = (goal.endDate.Value - goal.startDate).TotalDays;
                     var elapsedDays = (DateTime.Now - goal.startDate).TotalDays;
                     progressPercentage = (int)Math.Min(100, Math.Max(0, (elapsedDays / totalDays) * 100));
                 }
