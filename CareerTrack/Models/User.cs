@@ -1,0 +1,39 @@
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
+
+namespace CareerTrack.Models
+{
+    public class User
+    {
+        public int Id { get; set; }
+
+        [Required]
+        [StringLength(50)]
+        public string UserName { get; set; } = null!;
+
+        [Required]
+        [EmailAddress]
+        [StringLength(100)]
+        public string Email { get; set; } = null!;
+
+        [Required]
+        public string PasswordHash { get; set; } = null!;
+
+        [Required]
+        public string PasswordSalt { get; set; } = null!;
+
+        [Required]
+        [StringLength(50)]
+        public string FirstName { get; set; } = null!;
+
+        [Required]
+        [StringLength(50)]
+        public string LastName { get; set; } = null!;
+
+        [Phone]
+        [StringLength(20)]
+        public string? Phone { get; set; }
+
+        public bool IsAdmin { get; set; }
+    }
+}

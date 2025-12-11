@@ -1,4 +1,5 @@
 ﻿using CareerTrack.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,6 +15,7 @@ namespace CareerTrack.Controllers
         }
 
         // GET: GoalsController
+        [Authorize]
         public IActionResult Index()
         {
             var goals = _context.Goals.ToList();
