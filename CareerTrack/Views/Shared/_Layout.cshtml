@@ -1,4 +1,10 @@
-﻿<!DOCTYPE html>
+﻿@{
+    var user = this.ViewContext.HttpContext.User;
+    bool loggedIn = user?.Identity?.IsAuthenticated == true;
+    string username = user?.Identity?.Name ?? "";
+}
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -26,6 +32,25 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
                     </ul>
+
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="badge bg-primary text-white">
+                            @(loggedIn? username : "guest")
+                        </span>
+
+                        @if (!loggedIn)
+                        {
+                            <a class="btn btn-outline-primary btn-sm" asp-area="" asp-controller="User" asp-action="Login">Log In</a>
+                            <a class="btn btn-primary btn-sm" asp-area="" asp-controller="User" asp-action="Register">Register</a>
+                        }
+                        else
+                        {
+                            <a class="btn btn-outline-danger btn-sm" asp-area="" asp-controller="User" asp-action="Logout">
+                                Log Out
+                            </a>
+                        }
+                    </div>
+
                 </div>
             </div>
         </nav>
