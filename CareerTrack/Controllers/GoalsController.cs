@@ -1,17 +1,28 @@
-﻿using CareerTrack.Models;
+﻿/// 1. SINGLE RESPONSIBILITY PRINCIPLE (SRP) violation
+
+using CareerTrack.Models;
+using CareerTrack.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Runtime.Intrinsics.Arm;
 
 namespace CareerTrack.Controllers
 {
     public class GoalsController : Controller
     {
         private readonly AppDbContext _context;
+        private readonly IGoalService _goalService;
+        private readonly IUserContextService _userContext;
 
-        public GoalsController(AppDbContext context)
+        public GoalsController(AppDbContext context,
+             IGoalService goalService,
+            IUserContextService userContext)
         {
             _context = context;
+
+            _goalService = goalService;
+            _userContext = userContext;
         }
 
         // GET: GoalsController
@@ -25,12 +36,16 @@ namespace CareerTrack.Controllers
         // GET: GoalsController/Details/5
         public IActionResult Details(int? id)
         {
-            if (id == null)
-                return NotFound();
+            if (id == null) return NotFound();
 
-            var goal = _context.Goals.FirstOrDefault(m => m.Id == id);
-            if (goal == null)
-                return NotFound();
+            var userId = _userContext.GetCurrentUserId();
+            /// no no, ne smijemo sprezati kontroler s bazom
+            //var goal = _context.Goals.FirstOrDefault(m => m.Id == id);
+            var goal = _goalService.GetGoalById(id.Value, userId);
+
+            if (goal == null) return NotFound();
+
+
 
             return View(goal);
         }
@@ -49,16 +64,24 @@ namespace CareerTrack.Controllers
         {
             if (ModelState.IsValid)
             {
-                goal.startDate = DateTime.SpecifyKind(goal.startDate, DateTimeKind.Utc);
-                goal.targetDate = DateTime.SpecifyKind(goal.targetDate, DateTimeKind.Utc);
+                // S Single Responsibility Principle (SRP) prekršaj
+                // zašto kontroler rukuje datumima umesto servisa/repozitorijuma?
+                //goal.startDate = DateTime.SpecifyKind(goal.startDate, DateTimeKind.Utc);
+                //goal.targetDate = DateTime.SpecifyKind(goal.targetDate, DateTimeKind.Utc);
 
-                if (goal.endDate.HasValue)
-                {
-                    goal.endDate = DateTime.SpecifyKind(goal.endDate.Value, DateTimeKind.Utc);
-                }
+                //if (goal.endDate.HasValue)
+                //{
+                //    // why ??? stupid AI
+                //    goal.endDate = DateTime.SpecifyKind(goal.endDate.Value, DateTimeKind.Utc);
+                //}
 
-                _context.Add(goal);
-                _context.SaveChanges();
+                //// s neba pa u bazu :O ??!!
+                //_context.Add(goal);
+                //_context.SaveChanges();
+
+                var userId = _userContext.GetCurrentUserId();
+                _goalService.CreateGoal(goal, userId);
+
                 return RedirectToAction(nameof(Index));
             }
             return View(goal);
@@ -70,7 +93,10 @@ namespace CareerTrack.Controllers
             if (id == null)
                 return NotFound();
 
-            var goal = _context.Goals.Find(id);
+            //var goal = _context.Goals.Find(id);
+            var userId = _userContext.GetCurrentUserId();
+            var goal = _goalService.GetGoalById(id.Value, userId);
+
             if (goal == null)
                 return NotFound();
 

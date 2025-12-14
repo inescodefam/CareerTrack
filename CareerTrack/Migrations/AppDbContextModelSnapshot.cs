@@ -38,6 +38,9 @@ namespace CareerTrack.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
                     b.Property<DateTime?>("endDate")
                         .HasColumnType("timestamp with time zone");
 
@@ -48,6 +51,8 @@ namespace CareerTrack.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Goals");
                 });
@@ -98,6 +103,17 @@ namespace CareerTrack.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("CareerTrack.Models.Goal", b =>
+                {
+                    b.HasOne("CareerTrack.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 #pragma warning restore 612, 618
         }
