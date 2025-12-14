@@ -10,5 +10,6 @@ public class AppDbContext : DbContext
 
     public DbSet<Goal> Goals { get; set; }
     public DbSet<User> Users { get; set; }
-
+    public DbSet<GoalProgress> GoalProgress { get; set; }
+    public DbSet<ProgressUpdate> ProgressUpdates { get; internal set; }
 }
