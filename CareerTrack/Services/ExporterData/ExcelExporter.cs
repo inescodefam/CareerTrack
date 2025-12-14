@@ -1,5 +1,7 @@
 ﻿namespace CareerTrack.Services.ExporterData
 {
+    // open / close principle
+
     public class ExcelExporter
     {
         public string FormatName => "Excel";

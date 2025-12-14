@@ -1,5 +1,7 @@
 ﻿namespace CareerTrack.Services.ExporterData
 {
+
+    // open close principle
     public class PdfExporter : IExporter
     {
         public string FormatName => "PDF";

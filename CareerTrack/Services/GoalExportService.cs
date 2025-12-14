@@ -42,6 +42,8 @@
             _context = context;
         }
 
+        // open for extension, closed for modification principle
+
         public byte[] ExportGoal(int goalId, int userId, string format)
         {
             var exporter = _exporters.FirstOrDefault(e =>
