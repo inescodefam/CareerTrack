@@ -5,7 +5,6 @@ using CareerTrack.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Runtime.Intrinsics.Arm;
 
 namespace CareerTrack.Controllers
 {
@@ -65,7 +64,7 @@ namespace CareerTrack.Controllers
             if (ModelState.IsValid)
             {
                 // S Single Responsibility Principle (SRP) prekršaj
-                // zašto kontroler rukuje datumima umesto servisa/repozitorijuma?
+                // zašto kontroler rukuje datumima
                 //goal.startDate = DateTime.SpecifyKind(goal.startDate, DateTimeKind.Utc);
                 //goal.targetDate = DateTime.SpecifyKind(goal.targetDate, DateTimeKind.Utc);
 
