@@ -1,8 +1,11 @@
-﻿namespace CareerTrack.Services
+﻿using CareerTrack.Models;
+
+namespace CareerTrack.Services
 {
 
-    // SRP Violation: This class has multiple reasons to change
+    // SRP violation
     // open for extension, closed for modification principle is violated
+
     //public class GoalExportService
     //{
     //    public byte[] ExportGoal(Goal goal, string format)
@@ -57,13 +60,12 @@
 
             var user = _context.Users.Find(userId);
 
-            var data = new ExportData
-            {
-                Goal = goal,
-                User = user!
-            };
+            // interface segretation
 
-            return exporter.Export(data);
+            ExportableUser userData = new(user);
+            ExportableGoal data = new(goal);
+
+            return exporter.Export(userData, data);
         }
 
         public IEnumerable<string> GetAvailableFormats()

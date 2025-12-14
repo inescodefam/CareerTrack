@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using CareerTrack.Services.ExporterData;
+using System.ComponentModel.DataAnnotations;
 
 namespace CareerTrack.Models
 {
@@ -25,5 +26,20 @@ namespace CareerTrack.Models
 
         public User? User { get; set; }
 
+    }
+
+    // interface segregation principle
+    public class ExportableGoal : IExportGoalData
+    {
+        private readonly Goal _goal;
+        public ExportableGoal(Goal goal)
+        {
+            _goal = goal;
+        }
+        string IExportGoalData.getGoalTitle() => _goal.Name;
+
+        string IExportGoalData.getGoalStartDate() => _goal.startDate.ToString();
+
+        string IExportGoalData.getGoalTargetDate() => _goal.targetDate.ToString();
     }
 }

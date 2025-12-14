@@ -19,23 +19,15 @@ namespace CareerTrack.Services
             {
                 GoalId = goalId,
                 UserId = userId,
-                ProgressPercentage = 0,
-                LastUpdated = DateTime.UtcNow
-            };
-
-            _context.GoalProgress.Add(progress);
-            _context.SaveChanges();
-
-            var historyEntry = new ProgressUpdate
-            {
-                GoalId = goalId,
-                UserId = userId,
-                ProgressPercentage = 0,
-                UpdatedAt = DateTime.UtcNow,
+                progressData = new GoalProgressData
+                {
+                    ProgressPercentage = 0,
+                    LastUpdated = DateTime.UtcNow
+                },
                 Notes = "Goal created"
             };
 
-            _context.ProgressUpdates.Add(historyEntry);
+            _context.GoalProgress.Add(progress);
             _context.SaveChanges();
         }
 
@@ -54,21 +46,24 @@ namespace CareerTrack.Services
             if (progress == null)
                 throw new InvalidOperationException("Progress record not found");
 
-            var oldPercentage = progress.ProgressPercentage;
-            progress.ProgressPercentage = percentage;
-            progress.LastUpdated = DateTime.UtcNow;
+            var oldPercentage = progress.progressData.ProgressPercentage;
+            progress.progressData.ProgressPercentage = percentage;
+            progress.progressData.LastUpdated = DateTime.UtcNow;
             progress.Notes = notes;
 
-            var historyEntry = new ProgressUpdate
+            var historyEntry = new GoalProgress
             {
                 GoalId = goalId,
                 UserId = userId,
-                ProgressPercentage = percentage,
-                UpdatedAt = DateTime.UtcNow,
+                progressData = new GoalProgressData
+                {
+                    ProgressPercentage = percentage,
+                    LastUpdated = DateTime.UtcNow
+                },
                 Notes = notes ?? $"Progress updated from {oldPercentage}% to {percentage}%"
             };
 
-            _context.ProgressUpdates.Add(historyEntry);
+            _context.GoalProgress.Add(historyEntry);
 
             if (percentage >= 100)
             {
@@ -82,11 +77,11 @@ namespace CareerTrack.Services
             _context.SaveChanges();
         }
 
-        public IEnumerable<ProgressUpdate> GetProgressHistory(int goalId, int userId)
+        public IEnumerable<GoalProgress> GetProgressHistory(int goalId, int userId)
         {
-            return _context.ProgressUpdates
+            return _context.GoalProgress
                 .Where(pu => pu.GoalId == goalId && pu.UserId == userId)
-                .OrderByDescending(pu => pu.UpdatedAt)
+                .OrderByDescending(pu => pu.progressData.LastUpdated)
                 .ToList();
         }
     }

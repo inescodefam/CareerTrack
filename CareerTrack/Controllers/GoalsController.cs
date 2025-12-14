@@ -150,7 +150,7 @@ namespace CareerTrack.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                   var userId = _userContext.GetCurrentUserId();
+                    var userId = _userContext.GetCurrentUserId();
                     if (_goalService.GetGoalById(goal.Id, userId) == null)
                         return NotFound();
                     throw;
@@ -237,6 +237,12 @@ namespace CareerTrack.Controllers
                 TempData["Error"] = $"Failed to generate {format}: {ex.Message}";
                 return RedirectToAction(nameof(Details), new { id });
             }
+        }
+
+        // liscov  any goalProgressBAse subclass can be passed here
+        public void ShowProgress(IGoalProgress progress)
+        {
+            Console.WriteLine(progress.GetProgressDescription());
         }
     }
 }
