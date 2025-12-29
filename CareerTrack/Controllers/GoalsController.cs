@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CareerTrack.Controllers
 {
+
     public class GoalsController : Controller
     {
         //private readonly AppDbContext _context; /// direktna ovisnost o EF Core-u
@@ -249,7 +250,7 @@ namespace CareerTrack.Controllers
 
 
         // ====== DESIGN PATTERNS EXAMPLES ====== DECORATOR PATTERN =====
-        [HttpGet("notifications")]
+        [HttpGet]
         public IActionResult Notifications()
         {
             IGoalNotification goalNotify = new GoalNotification("Learn Design Patterns");
