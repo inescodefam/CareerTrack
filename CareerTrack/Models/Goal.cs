@@ -1,4 +1,5 @@
-﻿using CareerTrack.Services.ExporterData;
+﻿using CareerTrack.Interfaces;
+using CareerTrack.Services.ExporterData;
 using System.ComponentModel.DataAnnotations;
 
 namespace CareerTrack.Models
@@ -41,5 +42,16 @@ namespace CareerTrack.Models
         string IExportGoalData.getGoalStartDate() => _goal.startDate.ToString();
 
         string IExportGoalData.getGoalTargetDate() => _goal.targetDate.ToString();
+    }
+
+
+    public class GoalNotification : IGoalNotification
+    {
+        public string Name { get; set; }
+        public GoalNotification(string goal) => Name = goal;
+        public string GetDescription() => $"Goal: {Name}";
+        public void SendReminder() => Console.WriteLine($"Reminder sent for goal: {Name}");
+        public void StatusNotification() => Console.WriteLine($"Status notification for goal: {Name}");
+
     }
 }

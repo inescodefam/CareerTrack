@@ -1,6 +1,8 @@
 ﻿/// 1. SINGLE RESPONSIBILITY PRINCIPLE 
 // 5. DEPENDENCY INVERSION PRINCIPLE - ovisit o abstrakcijama kroz DI
 
+using CareerTrack.Decorators;
+using CareerTrack.Interfaces;
 using CareerTrack.Models;
 using CareerTrack.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -243,6 +245,35 @@ namespace CareerTrack.Controllers
         public void ShowProgress(IGoalProgress progress)
         {
             Console.WriteLine(progress.GetProgressDescription());
+        }
+
+
+        // ====== DESIGN PATTERNS EXAMPLES ====== DECORATOR PATTERN =====
+        [HttpGet("notifications")]
+        public IActionResult Notifications()
+        {
+            IGoalNotification goalNotify = new GoalNotification("Learn Design Patterns");
+
+            ViewBag.Demo1 = goalNotify.GetDescription();
+            goalNotify.SendReminder();
+            goalNotify.StatusNotification();
+
+            IGoalNotification goalWithReminder = new ReminderDecorator(goalNotify);
+
+            ViewBag.Demo2 = goalWithReminder.GetDescription();
+            goalWithReminder.SendReminder();
+            goalWithReminder.StatusNotification();
+
+
+            IGoalNotification goalWithBoth = new NotificationDecorator(
+                new ReminderDecorator(goalNotify)
+            );
+
+            ViewBag.Demo3 = goalWithBoth.GetDescription();
+            goalWithBoth.SendReminder();
+            goalWithBoth.StatusNotification();
+
+            return View();
         }
     }
 }
