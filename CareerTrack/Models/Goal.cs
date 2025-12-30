@@ -45,6 +45,7 @@ namespace CareerTrack.Models
     }
 
 
+    // decorator pattern
     public class GoalNotification : IGoalNotification
     {
         public string Name { get; set; }
@@ -53,5 +54,21 @@ namespace CareerTrack.Models
         public void SendReminder() => Console.WriteLine($"Reminder sent for goal: {Name}");
         public void StatusNotification() => Console.WriteLine($"Status notification for goal: {Name}");
 
+    }
+
+    public class ShortTermGoal : Goal
+    {
+        public int ReminderFrequencyDays { get; set; } = 7; 
+    }
+
+    public class LongTermGoal : Goal
+    {
+        public List<string> Milestones { get; set; } = new();
+    }
+
+    public class SkillGoal : Goal
+    {
+        public string SkillCategory { get; set; }
+        public int ProficiencyLevel { get; set; }
     }
 }
