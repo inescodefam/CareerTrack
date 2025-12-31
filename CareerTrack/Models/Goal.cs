@@ -58,7 +58,7 @@ namespace CareerTrack.Models
 
     public class ShortTermGoal : Goal
     {
-        public int ReminderFrequencyDays { get; set; } = 7; 
+        public int ReminderFrequencyDays { get; set; } = 7;
     }
 
     public class LongTermGoal : Goal
@@ -71,4 +71,22 @@ namespace CareerTrack.Models
         public string SkillCategory { get; set; }
         public int ProficiencyLevel { get; set; }
     }
+
+
+    // chain of responsibility pattern models
+
+    public class GoalHandlerResult
+    {
+        public bool Success { get; set; }
+        public string Message { get; set; }
+        public List<string> Errors { get; set; } = new();
+    }
+
+    public class GoalRequest
+    {
+        public Goal Goal { get; set; }
+        public int UserId { get; set; }
+        public string Action { get; set; }
+    }
+
 }

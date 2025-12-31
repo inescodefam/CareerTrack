@@ -2,6 +2,7 @@
 // 5. DEPENDENCY INVERSION PRINCIPLE - ovisit o abstrakcijama kroz DI
 
 using CareerTrack.Decorators;
+using CareerTrack.Handlers;
 using CareerTrack.Interfaces;
 using CareerTrack.Models;
 using CareerTrack.Services;
@@ -19,6 +20,7 @@ namespace CareerTrack.Controllers
         private readonly IUserContextService _userContext;
         private readonly IProgressService _progressService;
         private readonly IGoalExportService _exportService;
+        private readonly IGoalHandler _handlerChain;
 
 
         public GoalsController(AppDbContext context,
@@ -33,6 +35,17 @@ namespace CareerTrack.Controllers
             _userContext = userContext;
             _progressService = progressService;
             _exportService = exportService;
+
+
+            /// cor pattern chain setup
+            var validationHandler = new GoalValidationHandler();
+            var authorizationHandler = new GoalAuthorizationHandler(context);
+            var businessRuleHandler = new GoalBusinessRuleHandler(context);
+
+            _handlerChain = validationHandler;
+            validationHandler
+                .SetNext(authorizationHandler)
+                .SetNext(businessRuleHandler);
         }
 
         // GET: GoalsController
@@ -293,5 +306,62 @@ namespace CareerTrack.Controllers
             return RedirectToAction("Index");
         }
 
+
+        /// ====== CHAIN OF RESPONSIBILITY PATTERN ===== behavioral
+
+        [HttpPost]
+        public IActionResult CreateValidGoal(Goal goal)
+        {
+            var currentUser = _userContext.GetCurrentUserId();
+
+            var request = new GoalRequest
+            {
+                Goal = goal,
+                UserId = currentUser,
+                Action = "Create"
+            };
+
+            var result = _handlerChain.Handle(request);
+
+            if (!result.Success)
+            {
+                foreach (var error in result.Errors)
+                    ModelState.AddModelError("", error);
+
+                if (!string.IsNullOrEmpty(result.Message))
+                    ModelState.AddModelError("", result.Message);
+
+                return View(goal);
+            }
+
+            TempData["Success"] = result.Message;
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public IActionResult ValidGoalDeleteDelete(int id)
+        {
+            var currentUser = _userContext.GetCurrentUserId();
+            var goal = _goalService.GetGoalById(id, currentUser); // vec provjerava 
+
+            var request = new GoalRequest
+            {
+                Goal = goal,
+                UserId = currentUser,
+                Action = "Delete"
+            };
+
+            var result = _handlerChain.Handle(request);
+
+            if (!result.Success)
+            {
+                TempData["Error"] = result.Message;
+                return RedirectToAction("Index");
+            }
+
+            TempData["Success"] = result.Message;
+            return RedirectToAction("Index");
+        }
     }
 }
+
