@@ -1,6 +1,9 @@
 ﻿/// 1. SINGLE RESPONSIBILITY PRINCIPLE 
 // 5. DEPENDENCY INVERSION PRINCIPLE - ovisit o abstrakcijama kroz DI
 
+using CareerTrack.Decorators;
+using CareerTrack.Handlers;
+using CareerTrack.Interfaces;
 using CareerTrack.Models;
 using CareerTrack.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -9,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CareerTrack.Controllers
 {
+
     public class GoalsController : Controller
     {
         //private readonly AppDbContext _context; /// direktna ovisnost o EF Core-u
@@ -16,6 +20,7 @@ namespace CareerTrack.Controllers
         private readonly IUserContextService _userContext;
         private readonly IProgressService _progressService;
         private readonly IGoalExportService _exportService;
+        private readonly IGoalHandler _handlerChain;
 
 
         public GoalsController(AppDbContext context,
@@ -30,6 +35,17 @@ namespace CareerTrack.Controllers
             _userContext = userContext;
             _progressService = progressService;
             _exportService = exportService;
+
+
+            /// cor pattern chain setup
+            var validationHandler = new GoalValidationHandler();
+            var authorizationHandler = new GoalAuthorizationHandler(context);
+            var businessRuleHandler = new GoalBusinessRuleHandler(context);
+
+            _handlerChain = validationHandler;
+            validationHandler
+                .SetNext(authorizationHandler)
+                .SetNext(businessRuleHandler);
         }
 
         // GET: GoalsController
@@ -244,5 +260,108 @@ namespace CareerTrack.Controllers
         {
             Console.WriteLine(progress.GetProgressDescription());
         }
+
+
+        // ====== DESIGN PATTERNS EXAMPLES ====== DECORATOR PATTERN ===== structural
+        [HttpGet]
+        public IActionResult Notifications()
+        {
+            IGoalNotification goalNotify = new GoalNotification("Learn Design Patterns");
+
+            ViewBag.Demo1 = goalNotify.GetDescription();
+            goalNotify.SendReminder();
+            goalNotify.StatusNotification();
+
+            IGoalNotification goalWithReminder = new ReminderDecorator(goalNotify);
+
+            ViewBag.Demo2 = goalWithReminder.GetDescription();
+            goalWithReminder.SendReminder();
+            goalWithReminder.StatusNotification();
+
+
+            IGoalNotification goalWithBoth = new NotificationDecorator(
+                new ReminderDecorator(goalNotify)
+            );
+
+            ViewBag.Demo3 = goalWithBoth.GetDescription();
+            goalWithBoth.SendReminder();
+            goalWithBoth.StatusNotification();
+
+            return View();
+        }
+
+
+        // ====== DESIGN PATTERNS EXAMPLES ====== FACTORY PATTERN ===== creational
+
+        private readonly IGoalFactory _goalFactory;
+
+        [HttpPost]
+        public IActionResult Create(string goalType, string name, DateTime targetDate)
+        {
+            var userId = _userContext.GetCurrentUserId();
+
+            var goal = _goalFactory.CreateGoal(goalType, name, targetDate);
+
+            _goalService.CreateGoal(goal, userId);
+            return RedirectToAction("Index");
+        }
+
+
+        /// ====== CHAIN OF RESPONSIBILITY PATTERN ===== behavioral
+
+        [HttpPost]
+        public IActionResult CreateValidGoal(Goal goal)
+        {
+            var currentUser = _userContext.GetCurrentUserId();
+
+            var request = new GoalRequest
+            {
+                Goal = goal,
+                UserId = currentUser,
+                Action = "Create"
+            };
+
+            var result = _handlerChain.Handle(request);
+
+            if (!result.Success)
+            {
+                foreach (var error in result.Errors)
+                    ModelState.AddModelError("", error);
+
+                if (!string.IsNullOrEmpty(result.Message))
+                    ModelState.AddModelError("", result.Message);
+
+                return View(goal);
+            }
+
+            TempData["Success"] = result.Message;
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public IActionResult ValidGoalDeleteDelete(int id)
+        {
+            var currentUser = _userContext.GetCurrentUserId();
+            var goal = _goalService.GetGoalById(id, currentUser); // vec provjerava 
+
+            var request = new GoalRequest
+            {
+                Goal = goal,
+                UserId = currentUser,
+                Action = "Delete"
+            };
+
+            var result = _handlerChain.Handle(request);
+
+            if (!result.Success)
+            {
+                TempData["Error"] = result.Message;
+                return RedirectToAction("Index");
+            }
+
+            TempData["Success"] = result.Message;
+            return RedirectToAction("Index");
+        }
     }
 }
+
