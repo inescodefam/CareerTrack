@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
 namespace CareerTrack.Controllers
@@ -45,7 +44,6 @@ namespace CareerTrack.Controllers
 
 
             var existingUser = _context.Users
-                .AsNoTracking()
                 .FirstOrDefault(u => u.UserName.ToLower() == username.ToLower());
 
 
@@ -93,9 +91,9 @@ namespace CareerTrack.Controllers
             if (sentUserToLogin.ReturnUrl != null)
                 return LocalRedirect(sentUserToLogin.ReturnUrl);
             else if (existingUser.IsAdmin)
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Index", "Goals");
             else if (!existingUser.IsAdmin)
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Index", "Goals");
             else
                 return View();
         }
@@ -123,7 +121,7 @@ namespace CareerTrack.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return ValidationProblem(ModelState);
+                return View(sentUserToRegister);
             }
             try
             {

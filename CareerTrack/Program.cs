@@ -8,18 +8,15 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-//ensure ModelState check
 builder.Services.Configure<ApiBehaviorOptions>(options =>
     options.SuppressModelStateInvalidFilter = true);
 
 
-//cookie auth
 builder.Services.AddAuthentication()
   .AddCookie(options =>
   {
@@ -30,7 +27,7 @@ builder.Services.AddAuthentication()
       options.ExpireTimeSpan = TimeSpan.FromMinutes(20);
   });
 
-// http context
+
 builder.Services.AddHttpContextAccessor();
 
 // register:

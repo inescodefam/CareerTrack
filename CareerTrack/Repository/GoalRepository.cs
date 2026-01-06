@@ -42,6 +42,7 @@ namespace CareerTrack.Repository
         {
             return _context.Goals
                 .Include(g => g.User)
+                .AsNoTracking()
                 .FirstOrDefault(g => g.Id == goalId && g.UserId == userId);
         }
 

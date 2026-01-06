@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RunSettings>
+  <TestRunParameters>
+    <Parameter name="BaseUrl" value="https://localhost:7095" />
+    <!--<Parameter name="BaseUrl" value="https://careertrack-dl4t.onrender.com" />-->
+
+  </TestRunParameters>
+
+  <Playwright>
+    <BrowserName>chromium</BrowserName>
+    <!-- Options: chromium, firefox, webkit -->
+
+    <LaunchOptions>
+      <Headless>true</Headless>
+      <!-- true for CI/CD -->
+      <SlowMo>100</SlowMo>
+      <!-- Slow down execution by 100ms for visibility -->
+    </LaunchOptions>
+
+    <Screenshot>OnFailure</Screenshot>
+    <!-- Options: Off, On, OnFailure -->
+
+    <Video>RetainOnFailure</Video>
+    <!-- Options: Off, On, RetainOnFailure -->
+
+    <Trace>OnFailure</Trace>
+    <!-- Options: Off, On, OnFailure, RetainOnFailure -->
+  </Playwright>
+</RunSettings>
