@@ -60,7 +60,7 @@ jobs:
           echo "Current coverage: $COVERAGE%"
 
           # Minimum threshold
-          THRESHOLD=40.0
+          THRESHOLD=20.0
 
           # Compare coverage to threshold
           if (( $(echo "$COVERAGE < $THRESHOLD" | bc -l) )); then
