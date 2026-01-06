@@ -40,12 +40,12 @@
         {
             return $@"
                 <html>
-                <head><title>Goal Report: {goalData.getGoalTitle}</title></head>
+                <head><title>Goal Report: {goalData.getGoalTitle()}</title></head>
                 <body>
-                    <h1>{goalData.getGoalTitle}</h1>
-                    <p>Owner: {data.getUserName} </p>
-                    <p>Start: {goalData.getGoalStartDate:yyyy-MM-dd}</p>
-                    <p>Target: {goalData.getGoalTargetDate:yyyy-MM-dd}</p>
+                    <h1>{goalData.getGoalTitle()}</h1>
+                    <p>Owner: {data.getUserName()} </p>
+                    <p>Start: {goalData.getGoalStartDate()}</p>
+                    <p>Target: {goalData.getGoalTargetDate()}</p>
                 </body>
                 </html>";
         }

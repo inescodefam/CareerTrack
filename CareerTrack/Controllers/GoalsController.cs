@@ -21,13 +21,14 @@ namespace CareerTrack.Controllers
         private readonly IProgressService _progressService;
         private readonly IGoalExportService _exportService;
         private readonly IGoalHandler _handlerChain;
-
+        private readonly IGoalFactory _goalFactory;
 
         public GoalsController(AppDbContext context,
              IGoalService goalService,
             IUserContextService userContext,
             IProgressService progressService,
-            IGoalExportService exportService)
+            IGoalExportService exportService, 
+            IGoalFactory goalFactory)
         {
             //_context = context;
 
@@ -35,7 +36,7 @@ namespace CareerTrack.Controllers
             _userContext = userContext;
             _progressService = progressService;
             _exportService = exportService;
-
+            _goalFactory = goalFactory;
 
 
             var validationHandler = new GoalValidationHandler();
@@ -288,9 +289,6 @@ namespace CareerTrack.Controllers
 
             return View();
         }
-
-
-        private readonly IGoalFactory _goalFactory;
 
         [HttpPost]
         public IActionResult CreateGoalVariant(string goalType, string name, DateTime targetDate)

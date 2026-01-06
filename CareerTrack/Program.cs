@@ -1,3 +1,5 @@
+using CareerTrack.Factory;
+using CareerTrack.Interfaces;
 using CareerTrack.Repository;
 using CareerTrack.Services;
 using CareerTrack.Utilities;
@@ -37,6 +39,7 @@ builder.Services.AddScoped<IGoalService, GoalService>();
 builder.Services.AddScoped<IProgressService, ProgressService>();
 builder.Services.AddScoped<IUserContextService, UserContextService>();
 builder.Services.AddScoped<IGoalExportService, GoalExportService>();
+builder.Services.AddScoped<IGoalFactory, GoalFactory>();
 
 // Repositories
 builder.Services.AddScoped<IGoalRepository, GoalRepository>();

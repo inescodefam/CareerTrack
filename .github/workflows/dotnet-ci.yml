@@ -1,0 +1,125 @@
+name: CareerTrack test and deploy
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+env:
+  DOTNET_VERSION: "8.0.x"
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --no-restore --configuration Release
+
+      - name: Run tests
+        run: dotnet test --no-build --configuration Release --verbosity normal --collect:"XPlat Code Coverage" --results-directory ./coverage
+
+      - name: Generate coverage report
+        run: |
+          dotnet tool install -g dotnet-reportgenerator-globaltool
+          reportgenerator -reports:"./coverage/**/coverage.cobertura.xml" -targetdir:"coveragereport" -reporttypes:"Html;Cobertura;TextSummary"
+
+      - name: Display coverage summary
+        run: cat coveragereport/Summary.txt
+
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          files: ./coverage/**/coverage.cobertura.xml
+          fail_ci_if_error: false
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
+      - name: Upload coverage artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coveragereport/
+
+      - name: Check coverage thresholds
+        run: |
+          # Extract line coverage percentage
+          COVERAGE=$(grep "Line coverage:" coveragereport/Summary.txt | grep -oP '\d+\.\d+' | head -1)
+          echo "Current coverage: $COVERAGE%"
+
+          # Minimum threshold
+          THRESHOLD=40.0
+
+          # Compare coverage to threshold
+          if (( $(echo "$COVERAGE < $THRESHOLD" | bc -l) )); then
+            echo "Coverage $COVERAGE% is below threshold $THRESHOLD%"
+            exit 1
+          else
+            echo "Coverage $COVERAGE% meets threshold $THRESHOLD%"
+          fi
+
+  code-quality:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --no-restore
+
+      - name: Run code analysis
+        run: dotnet format --verify-no-changes --verbosity diagnostic
+        continue-on-error: true
+
+  # Deploy to Render (only on master branch after tests pass)
+  deploy-to-render:
+    needs: [build-and-test, code-quality]
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/master' && github.event_name == 'push'
+
+    steps:
+      - name: Trigger Render deployment
+        run: |
+          echo "Triggering deployment to Render..."
+          response=$(curl -X POST "${{ secrets.RENDER_DEPLOY_HOOK }}" \
+            -H "Content-Type: application/json" \
+            --write-out "\nHTTP_STATUS:%{http_code}" \
+            --silent)
+
+          http_status=$(echo "$response" | grep "HTTP_STATUS" | cut -d':' -f2)
+
+          if [ "$http_status" -eq 200 ] || [ "$http_status" -eq 201 ]; then
+            echo "Deployment triggered successfully!"
+            echo "Check deployment status at: https://dashboard.render.com"
+          else
+            echo "Deployment failed with status: $http_status"
+            echo "Response: $response"
+            exit 1
+          fi
+
+      - name: Wait for deployment
+        run: |
+          echo "Waiting for deployment to complete..."
+          echo "Monitor progress at: https://dashboard.render.com/web/srv-d5388hmmcj7s73e1phs0"
+          echo "App will be live at Render URL once deployment completes"
