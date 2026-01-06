@@ -1,6 +1,6 @@
 ﻿namespace CareerTrack.Interfaces
 {
-    public interface IGoalNotification
+    public interface IGoalNotification 
     {
         string GetDescription();
         void SendReminder();

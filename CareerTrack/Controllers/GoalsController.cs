@@ -37,7 +37,7 @@ namespace CareerTrack.Controllers
             _exportService = exportService;
 
 
-            /// cor pattern chain setup
+
             var validationHandler = new GoalValidationHandler();
             var authorizationHandler = new GoalAuthorizationHandler(context);
             var businessRuleHandler = new GoalBusinessRuleHandler(context);
@@ -262,7 +262,6 @@ namespace CareerTrack.Controllers
         }
 
 
-        // ====== DESIGN PATTERNS EXAMPLES ====== DECORATOR PATTERN ===== structural
         [HttpGet]
         public IActionResult Notifications()
         {
@@ -291,23 +290,21 @@ namespace CareerTrack.Controllers
         }
 
 
-        // ====== DESIGN PATTERNS EXAMPLES ====== FACTORY PATTERN ===== creational
-
         private readonly IGoalFactory _goalFactory;
 
         [HttpPost]
-        public IActionResult Create(string goalType, string name, DateTime targetDate)
+        public IActionResult CreateGoalVariant(string goalType, string name, DateTime targetDate)
         {
             var userId = _userContext.GetCurrentUserId();
 
             var goal = _goalFactory.CreateGoal(goalType, name, targetDate);
 
             _goalService.CreateGoal(goal, userId);
+
             return RedirectToAction("Index");
         }
 
 
-        /// ====== CHAIN OF RESPONSIBILITY PATTERN ===== behavioral
 
         [HttpPost]
         public IActionResult CreateValidGoal(Goal goal)
@@ -342,7 +339,7 @@ namespace CareerTrack.Controllers
         public IActionResult ValidGoalDeleteDelete(int id)
         {
             var currentUser = _userContext.GetCurrentUserId();
-            var goal = _goalService.GetGoalById(id, currentUser); // vec provjerava 
+            var goal = _goalService.GetGoalById(id, currentUser);
 
             var request = new GoalRequest
             {
