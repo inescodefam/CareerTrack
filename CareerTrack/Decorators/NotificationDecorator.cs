@@ -7,12 +7,12 @@ namespace CareerTrack.Decorators
         public NotificationDecorator(IGoalNotification goal) : base(goal)
         { }
 
-        public override string GetDescription() => base.GetDescription() + " + StatusNotification";
+        public override string GetDescription() => base.GetDescription() + " + Status Notification";
 
         public override void StatusNotification()
         {
             base.StatusNotification();
-            Console.WriteLine($"[NotificationDecorator] Sending status update notification!");
+            Console.WriteLine($"[Notification] Sending status update!");
         }
     }
 }

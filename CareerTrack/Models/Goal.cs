@@ -45,7 +45,6 @@ namespace CareerTrack.Models
     }
 
 
-    // decorator pattern
     public class GoalNotification : IGoalNotification
     {
         public string Name { get; set; }
@@ -55,6 +54,9 @@ namespace CareerTrack.Models
         public void StatusNotification() => Console.WriteLine($"Status notification for goal: {Name}");
 
     }
+
+
+
 
     public class ShortTermGoal : Goal
     {
@@ -73,7 +75,6 @@ namespace CareerTrack.Models
     }
 
 
-    // chain of responsibility pattern models
 
     public class GoalHandlerResult
     {

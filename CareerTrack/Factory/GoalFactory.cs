@@ -8,6 +8,8 @@ namespace CareerTrack.Factory
         public Goal CreateGoal(string goalType, string name, DateTime targetDate)
         {
             var timespan = targetDate - DateTime.UtcNow;
+            if (timespan.TotalDays < 0)
+                throw new ArgumentException("Target date must be in the future.");
 
             return goalType.ToLower() switch
             {
