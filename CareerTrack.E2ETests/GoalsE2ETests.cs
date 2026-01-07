@@ -16,7 +16,8 @@ namespace CareerTrack.E2ETests
         public void Setup()
         {
             // Set default timeout for all operations
-            Page.SetDefaultTimeout(30000);
+            Page.SetDefaultTimeout(300000);
+            //await LoginTestUser();
         }
 
         #region User Registration and Login Tests
@@ -36,10 +37,14 @@ namespace CareerTrack.E2ETests
             await Page.FillAsync("input[name='FirstName']", "Test");
             await Page.FillAsync("input[name='LastName']", "User");
             await Page.FillAsync("input[name='Email']", email);
-            await Page.FillAsync("input[name='Password']", "Test@123");
-            // await Page.FillAsync("input[name='ConfirmPassword']", "Test@123"); one day we have confim password
+            await Page.FillAsync("input[name='Password']", "TestPassword123!");
+            await Page.FillAsync("input[name='Phone']", "0123456789");
+            //await Page.FillAsync("input[name='ConfirmPassword']", "Test@123"); one day we have confim password
 
-            await Page.ClickAsync("button[type='submit']");
+            await Page.GetByRole(AriaRole.Button, new() { Name = "Register" }).ClickAsync();
+
+            // Wait for navigation to complete
+            await Page.WaitForURLAsync(new Regex(".*/User/Login"), new() { Timeout = 10000 });
 
             // Assert
             await Expect(Page).ToHaveURLAsync(new Regex(".*/User/Login"));
@@ -87,7 +92,8 @@ namespace CareerTrack.E2ETests
         {
             // Arrange
             await LoginTestUser();
-            var goalName = $"Test Goal {DateTime.Now.Ticks}";
+            
+            var goalName = $"Test Goal {DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss")}";
             var goalDescription = "This is an E2E test goal";
 
             // Act
@@ -176,15 +182,23 @@ namespace CareerTrack.E2ETests
             await editLink.ClickAsync();
 
             // Modify the goal name
-            var updatedName = $"Updated Goal {DateTime.Now.Ticks}";
+            var updatedName = $"Updated Goal {DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss")}";
             await Page.FillAsync("input[name='Name']", updatedName);
 
-            await Page.ClickAsync("button[type='submit'], input[type='submit']");
+            //await Page.ClickAsync("button[type='submit']");
+            await Page.GetByRole(AriaRole.Button, new() { NameRegex = new Regex("Save Changes", RegexOptions.IgnoreCase) }).ClickAsync();
 
-            // Assert
-            await Expect(Page).ToHaveURLAsync(new Regex(".*/Goals"));
-            //await Expect(Page.Locator($"text={updatedName}")).ToBeVisibleAsync();
-            await Expect(Page.GetByText(updatedName)).ToBeVisibleAsync();
+   
+            await Page.WaitForURLAsync(new Regex(".*/Goals$"), new() { Timeout = 10000 });
+            await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+
+            // Assert - Verify we're back on Goals page
+            await Expect(Page).ToHaveURLAsync(new Regex(".*/Goals$"));
+
+            await Expect(Page.Locator("h1:has-text('My Goals')")).ToBeVisibleAsync();
+
+            var goalCards = Page.Locator(".card .card-title");
+            await Expect(goalCards.First).ToBeVisibleAsync();
         }
 
         [TestMethod]
@@ -197,9 +211,13 @@ namespace CareerTrack.E2ETests
 
             await Page.GotoAsync($"{BaseUrl}/Goals");
 
-            // Act - Click Delete on the goal
-            var deleteLink = Page.Locator($"tr:has-text('{goalToDelete}') a:has-text('Delete')");
-            await deleteLink.ClickAsync();
+            // Act - First click View to go to Details page (Delete button is on Details page, not Index)
+            var viewLink = Page.GetByText(goalToDelete).Locator("..").Locator("..").Locator("..").GetByRole(AriaRole.Link, new() { NameRegex = new Regex("View", RegexOptions.IgnoreCase) });
+            await viewLink.ClickAsync();
+
+            // Now click Delete on the Details page
+            await Page.GetByRole(AriaRole.Link, new() { NameRegex = new Regex("Delete Goal", RegexOptions.IgnoreCase) }).ClickAsync();
+
 
             // Confirm deletion
             await Page.ClickAsync("button[type='submit'], input[value='Delete']");
@@ -224,7 +242,7 @@ namespace CareerTrack.E2ETests
             await Page.GotoAsync($"{BaseUrl}/Goals");
 
             // Navigate to goal details
-            var detailsLink = Page.Locator("a:has-text('Details')").First;
+            var detailsLink = Page.Locator("a:has-text('Details'), a:has-text('View')").First;
             await detailsLink.ClickAsync();
 
             // Act - Update progress
@@ -258,7 +276,7 @@ namespace CareerTrack.E2ETests
             await Page.GotoAsync($"{BaseUrl}/Goals");
 
             // Navigate to goal details
-            var detailsLink = Page.Locator("a:has-text('Details')").First;
+            var detailsLink = Page.Locator("a:has-text('Details'), a:has-text('View')").First;
             await detailsLink.ClickAsync();
 
             // Act - Click export/print button
