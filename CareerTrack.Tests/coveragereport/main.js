@@ -221,15 +221,15 @@ var assemblies = [
       { "name": "AspNetCoreGeneratedDocument.Views_Goals_Edit", "rp": "CareerTrack_Views_Goals_Edit.html", "cl": 0, "ucl": 2, "cal": 2, "tl": 75, "cb": 0, "tb": 2, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "AspNetCoreGeneratedDocument.Views_Goals_Index", "rp": "CareerTrack_Views_Goals_Index.html", "cl": 0, "ucl": 28, "cal": 28, "tl": 124, "cb": 0, "tb": 32, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "AspNetCoreGeneratedDocument.Views_Goals_Notifications", "rp": "CareerTrack_Views_Goals_Notifications.html", "cl": 0, "ucl": 1, "cal": 1, "tl": 31, "cb": 0, "tb": 14, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "AspNetCoreGeneratedDocument.Views_Home_Index", "rp": "CareerTrack_Views_Home_Index.html", "cl": 0, "ucl": 1, "cal": 1, "tl": 8, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "AspNetCoreGeneratedDocument.Views_Home_Index", "rp": "CareerTrack_Views_Home_Index.html", "cl": 0, "ucl": 1, "cal": 1, "tl": 7, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "AspNetCoreGeneratedDocument.Views_Home_Privacy", "rp": "CareerTrack_Views_Home_Privacy.html", "cl": 0, "ucl": 1, "cal": 1, "tl": 6, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "AspNetCoreGeneratedDocument.Views_Shared__Layout", "rp": "CareerTrack_Views_Shared__Layout.html", "cl": 0, "ucl": 8, "cal": 8, "tl": 80, "cb": 0, "tb": 56, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "AspNetCoreGeneratedDocument.Views_Shared__Layout", "rp": "CareerTrack_Views_Shared__Layout.html", "cl": 0, "ucl": 15, "cal": 15, "tl": 86, "cb": 0, "tb": 102, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "AspNetCoreGeneratedDocument.Views_Shared_Error", "rp": "CareerTrack_Views_Shared_Error.html", "cl": 0, "ucl": 4, "cal": 4, "tl": 25, "cb": 0, "tb": 2, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "AspNetCoreGeneratedDocument.Views_User_Login", "rp": "CareerTrack_Views_User_Login.html", "cl": 0, "ucl": 2, "cal": 2, "tl": 45, "cb": 0, "tb": 2, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "AspNetCoreGeneratedDocument.Views_User_Register", "rp": "CareerTrack_Views_User_Register.html", "cl": 0, "ucl": 2, "cal": 2, "tl": 68, "cb": 0, "tb": 2, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "CareerTrack.Controllers.GoalsController", "rp": "CareerTrack_GoalsController.html", "cl": 211, "ucl": 23, "cal": 234, "tl": 362, "cb": 67, "tb": 78, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "CareerTrack.Controllers.HomeController", "rp": "CareerTrack_HomeController.html", "cl": 0, "ucl": 13, "cal": 13, "tl": 32, "cb": 0, "tb": 4, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "CareerTrack.Controllers.UserController", "rp": "CareerTrack_UserController.html", "cl": 0, "ucl": 101, "cal": 101, "tl": 174, "cb": 0, "tb": 22, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "CareerTrack.Controllers.HomeController", "rp": "CareerTrack_HomeController.html", "cl": 13, "ucl": 0, "cal": 13, "tl": 32, "cb": 3, "tb": 4, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "CareerTrack.Controllers.UserController", "rp": "CareerTrack_UserController.html", "cl": 0, "ucl": 140, "cal": 140, "tl": 172, "cb": 0, "tb": 40, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "CareerTrack.Decorators.GoalDecorator", "rp": "CareerTrack_GoalDecorator.html", "cl": 7, "ucl": 0, "cal": 7, "tl": 17, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "CareerTrack.Decorators.NotificationDecorator", "rp": "CareerTrack_NotificationDecorator.html", "cl": 7, "ucl": 0, "cal": 7, "tl": 18, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "CareerTrack.Decorators.ReminderDecorator", "rp": "CareerTrack_ReminderDecorator.html", "cl": 4, "ucl": 0, "cal": 4, "tl": 15, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
@@ -241,7 +241,7 @@ var assemblies = [
       { "name": "CareerTrack.Migrations.AddNewTables", "rp": "CareerTrack_AddNewTables.html", "cl": 0, "ucl": 198, "cal": 198, "tl": 248, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "CareerTrack.Migrations.AddUserIdToGoalTable", "rp": "CareerTrack_AddUserIdToGoalTable.html", "cl": 0, "ucl": 152, "cal": 152, "tl": 199, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "CareerTrack.Migrations.AppDbContextModelSnapshot", "rp": "CareerTrack_AppDbContextModelSnapshot.html", "cl": 0, "ucl": 152, "cal": 152, "tl": 178, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "CareerTrack.Models.ErrorViewModel", "rp": "CareerTrack_ErrorViewModel.html", "cl": 0, "ucl": 2, "cal": 2, "tl": 9, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "CareerTrack.Models.ErrorViewModel", "rp": "CareerTrack_ErrorViewModel.html", "cl": 1, "ucl": 1, "cal": 2, "tl": 9, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "CareerTrack.Models.ExportableGoal", "rp": "CareerTrack_ExportableGoal.html", "cl": 7, "ucl": 0, "cal": 7, "tl": 93, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "CareerTrack.Models.ExportableUser", "rp": "CareerTrack_ExportableUser.html", "cl": 5, "ucl": 0, "cal": 5, "tl": 53, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "CareerTrack.Models.Goal", "rp": "CareerTrack_Goal.html", "cl": 8, "ucl": 0, "cal": 8, "tl": 93, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
@@ -256,9 +256,9 @@ var assemblies = [
       { "name": "CareerTrack.Models.LongTermGoal", "rp": "CareerTrack_LongTermGoal.html", "cl": 1, "ucl": 0, "cal": 1, "tl": 93, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "CareerTrack.Models.ShortTermGoal", "rp": "CareerTrack_ShortTermGoal.html", "cl": 1, "ucl": 0, "cal": 1, "tl": 93, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "CareerTrack.Models.SkillGoal", "rp": "CareerTrack_SkillGoal.html", "cl": 2, "ucl": 0, "cal": 2, "tl": 93, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "CareerTrack.Models.User", "rp": "CareerTrack_User.html", "cl": 7, "ucl": 2, "cal": 9, "tl": 53, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "CareerTrack.Repository.GoalRepository", "rp": "CareerTrack_GoalRepository.html", "cl": 38, "ucl": 0, "cal": 38, "tl": 64, "cb": 2, "tb": 2, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "CareerTrack.Security.PasswordHashProvider", "rp": "CareerTrack_PasswordHashProvider.html", "cl": 0, "ucl": 17, "cal": 17, "tl": 33, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "CareerTrack.Models.User", "rp": "CareerTrack_User.html", "cl": 9, "ucl": 0, "cal": 9, "tl": 53, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "CareerTrack.Repository.GoalRepository", "rp": "CareerTrack_GoalRepository.html", "cl": 49, "ucl": 1, "cal": 50, "tl": 76, "cb": 3, "tb": 4, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "CareerTrack.Security.PasswordHashProvider", "rp": "CareerTrack_PasswordHashProvider.html", "cl": 17, "ucl": 0, "cal": 17, "tl": 33, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "CareerTrack.Services.ExportData", "rp": "CareerTrack_ExportData.html", "cl": 2, "ucl": 0, "cal": 2, "tl": 10, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "CareerTrack.Services.ExporterData.ExcelExporter", "rp": "CareerTrack_ExcelExporter.html", "cl": 15, "ucl": 0, "cal": 15, "tl": 30, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "CareerTrack.Services.ExporterData.PdfExporter", "rp": "CareerTrack_PdfExporter.html", "cl": 18, "ucl": 0, "cal": 18, "tl": 53, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
@@ -266,10 +266,10 @@ var assemblies = [
       { "name": "CareerTrack.Services.GoalService", "rp": "CareerTrack_GoalService.html", "cl": 33, "ucl": 0, "cal": 33, "tl": 64, "cb": 4, "tb": 4, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "CareerTrack.Services.ProgressService", "rp": "CareerTrack_ProgressService.html", "cl": 61, "ucl": 0, "cal": 61, "tl": 88, "cb": 13, "tb": 14, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "CareerTrack.Services.UserContextService", "rp": "CareerTrack_UserContextService.html", "cl": 0, "ucl": 14, "cal": 14, "tl": 30, "cb": 0, "tb": 10, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "CareerTrack.Utilities.DateTimeConverter", "rp": "CareerTrack_DateTimeConverter.html", "cl": 0, "ucl": 8, "cal": 8, "tl": 17, "cb": 0, "tb": 2, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "CareerTrack.ViewModels.UserLoginVM", "rp": "CareerTrack_UserLoginVM.html", "cl": 0, "ucl": 3, "cal": 3, "tl": 22, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "CareerTrack.ViewModels.UserRegisterVM", "rp": "CareerTrack_UserRegisterVM.html", "cl": 0, "ucl": 7, "cal": 7, "tl": 43, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "Program", "rp": "CareerTrack_Program.html", "cl": 0, "ucl": 56, "cal": 56, "tl": 75, "cb": 0, "tb": 4, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "CareerTrack.Utilities.DateTimeConverter", "rp": "CareerTrack_DateTimeConverter.html", "cl": 8, "ucl": 0, "cal": 8, "tl": 17, "cb": 2, "tb": 2, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "CareerTrack.ViewModels.UserLoginVM", "rp": "CareerTrack_UserLoginVM.html", "cl": 3, "ucl": 0, "cal": 3, "tl": 22, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "CareerTrack.ViewModels.UserRegisterVM", "rp": "CareerTrack_UserRegisterVM.html", "cl": 6, "ucl": 1, "cal": 7, "tl": 43, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "Program", "rp": "CareerTrack_Program.html", "cl": 0, "ucl": 59, "cal": 59, "tl": 72, "cb": 0, "tb": 4, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
     ]},
 ];
 
@@ -283,6 +283,12 @@ var riskHotspotMetrics = [
 ];
 
 var riskHotspots = [
+  {
+    "assembly": "CareerTrack", "class": "AspNetCoreGeneratedDocument.Views_Shared__Layout", "reportPath": "CareerTrack_Views_Shared__Layout.html", "methodName": "<ExecuteAsync()", "methodShortName": "<ExecuteAsync()", "fileIndex": 0, "line": 28,
+    "metrics": [
+      { "value": 2352, "exceeded": true },
+      { "value": 48, "exceeded": true },
+    ]},
   {
     "assembly": "CareerTrack", "class": "AspNetCoreGeneratedDocument.Views_Goals_Details", "reportPath": "CareerTrack_Views_Goals_Details.html", "methodName": "ExecuteAsync()", "methodShortName": "ExecuteAsync()", "fileIndex": 0, "line": 4,
     "metrics": [
@@ -303,6 +309,12 @@ var riskHotspots = [
     ]},
   {
     "assembly": "CareerTrack", "class": "CareerTrack.Controllers.UserController", "reportPath": "CareerTrack_UserController.html", "methodName": "Login(CareerTrack.ViewModels.UserLoginVM)", "methodShortName": "Login(...)", "fileIndex": 0, "line": 34,
+    "metrics": [
+      { "value": 272, "exceeded": true },
+      { "value": 16, "exceeded": true },
+    ]},
+  {
+    "assembly": "CareerTrack", "class": "CareerTrack.Controllers.UserController", "reportPath": "CareerTrack_UserController.html", "methodName": "Login(CareerTrack.ViewModels.UserLoginVM)", "methodShortName": "Login(...)", "fileIndex": 0, "line": 33,
     "metrics": [
       { "value": 272, "exceeded": true },
       { "value": 16, "exceeded": true },
@@ -333,6 +345,12 @@ var riskHotspots = [
     ]},
   {
     "assembly": "CareerTrack", "class": "CareerTrack.Controllers.UserController", "reportPath": "CareerTrack_UserController.html", "methodName": "Register(CareerTrack.ViewModels.UserRegisterVM)", "methodShortName": "Register(...)", "fileIndex": 0, "line": 123,
+    "metrics": [
+      { "value": 42, "exceeded": true },
+      { "value": 6, "exceeded": false },
+    ]},
+  {
+    "assembly": "CareerTrack", "class": "CareerTrack.Controllers.UserController", "reportPath": "CareerTrack_UserController.html", "methodName": "Register(CareerTrack.ViewModels.UserRegisterVM)", "methodShortName": "Register(...)", "fileIndex": 0, "line": 121,
     "metrics": [
       { "value": 42, "exceeded": true },
       { "value": 6, "exceeded": false },
