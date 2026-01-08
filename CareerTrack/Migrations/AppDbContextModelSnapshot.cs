@@ -38,6 +38,9 @@ namespace CareerTrack.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
                     b.Property<DateTime?>("endDate")
                         .HasColumnType("timestamp with time zone");
 
@@ -49,7 +52,55 @@ namespace CareerTrack.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("UserId");
+
                     b.ToTable("Goals");
+                });
+
+            modelBuilder.Entity("CareerTrack.Models.GoalProgress", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("GoalId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Notes")
+                        .HasColumnType("text");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("progressDataid")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("progressDataid");
+
+                    b.ToTable("GoalProgress");
+                });
+
+            modelBuilder.Entity("CareerTrack.Models.GoalProgressData", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
+
+                    b.Property<DateTime>("LastUpdated")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("ProgressPercentage")
+                        .HasColumnType("integer");
+
+                    b.HasKey("id");
+
+                    b.ToTable("GoalProgressData");
                 });
 
             modelBuilder.Entity("CareerTrack.Models.User", b =>
@@ -98,6 +149,28 @@ namespace CareerTrack.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("CareerTrack.Models.Goal", b =>
+                {
+                    b.HasOne("CareerTrack.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("CareerTrack.Models.GoalProgress", b =>
+                {
+                    b.HasOne("CareerTrack.Models.GoalProgressData", "progressData")
+                        .WithMany()
+                        .HasForeignKey("progressDataid")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("progressData");
                 });
 #pragma warning restore 612, 618
         }

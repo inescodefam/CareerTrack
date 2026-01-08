@@ -1,4 +1,8 @@
-using Microsoft.AspNetCore.Authentication.Cookies;
+using CareerTrack.Factory;
+using CareerTrack.Interfaces;
+using CareerTrack.Repository;
+using CareerTrack.Services;
+using CareerTrack.Utilities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CareerTrack.Data;
@@ -48,6 +52,24 @@ builder.Services.AddAuthentication()
       options.ExpireTimeSpan = TimeSpan.FromMinutes(20);
   });
 
+// http context
+builder.Services.AddHttpContextAccessor();
+
+// register:
+// Services
+builder.Services.AddScoped<IGoalService, GoalService>();
+builder.Services.AddScoped<IProgressService, ProgressService>();
+builder.Services.AddScoped<IUserContextService, UserContextService>();
+builder.Services.AddScoped<IGoalExportService, GoalExportService>();
+builder.Services.AddScoped<IGoalFactory, GoalFactory>();
+
+// Repositories
+builder.Services.AddScoped<IGoalRepository, GoalRepository>();
+
+// Utilities
+builder.Services.AddScoped<IDateTimeConverter, DateTimeConverter>();
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -69,7 +91,7 @@ app.MapControllerRoute(
 using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    context.Database.EnsureCreated(); 
+    context.Database.EnsureCreated();
 }
 
 app.Run();

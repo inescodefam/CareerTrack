@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using CareerTrack.Services.ExporterData;
 using System.ComponentModel.DataAnnotations;
 
 namespace CareerTrack.Models
@@ -36,4 +36,18 @@ namespace CareerTrack.Models
 
         public bool IsAdmin { get; set; }
     }
+
+    // interface segregation principle
+    public class ExportableUser : IExportUserData
+    {
+        private readonly User _user;
+        public ExportableUser(User user)
+        {
+            _user = user;
+        }
+
+        string IExportUserData.getUserName() => $"{_user.FirstName} {_user.LastName}";
+    }
 }
+
+
