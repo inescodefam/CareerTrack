@@ -26,14 +26,17 @@ namespace CareerTrack.Services
             var username = (loginVM.Username ?? "").Trim();
             var password = loginVM.Password ?? "";
 
+
             if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
                 return new(false, genericLoginError, null);
+
 
             var user = await _users.FindByUsernameAsync(username);
             if(user == null)
             {
                 return new(false, genericLoginError, null);
             }
+
 
             var hashToCheck = PasswordHashProvider.GetHash(password, user.PasswordSalt);
             if (hashToCheck != user.PasswordHash)
@@ -42,15 +45,6 @@ namespace CareerTrack.Services
 
             string role = _roleResolver.ResolveRole(user);
             await _cookie.SignInAsync(user, role);
-
-
-            //LSP princip narušen
-            //try { role = _roleResolver.ResolveRole(user); }
-            //catch { role = "User"; }
-            //if (role == null) role = "User";
-
-            //OCP princip
-            //string role = user.IsAdmin ? "Admin" : "User";
 
             return new(true, null, loginVM.ReturnUrl ?? "/");
         }
