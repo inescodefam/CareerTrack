@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RunSettings>
+  <DataCollectionRunSettings>
+    <DataCollectors>
+      <DataCollector friendlyName="XPlat Code Coverage">
+        <Configuration>
+          <Format>cobertura</Format>
+
+          <!-- Exclude filters MUST be a single string -->
+          <Exclude>[CareerTrack]AspNetCoreGeneratedDocument.*;[CareerTrack]CareerTrack.Migrations.*;[CareerTrack]Program*;[CareerTrack]CompositionRoot*</Exclude>
+
+          <!-- ExcludeByFile also as a single string -->
+          <ExcludeByFile>**/Program.cs;**/CompositionRoot.cs</ExcludeByFile>
+        </Configuration>
+      </DataCollector>
+    </DataCollectors>
+  </DataCollectionRunSettings>
+</RunSettings>
