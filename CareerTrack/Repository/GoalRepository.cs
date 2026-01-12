@@ -42,6 +42,7 @@ namespace CareerTrack.Repository
         {
             return _context.Goals
                 .Include(g => g.User)
+                .AsNoTracking()
                 .FirstOrDefault(g => g.Id == goalId && g.UserId == userId);
         }
 
@@ -56,9 +57,20 @@ namespace CareerTrack.Repository
 
         public Goal Update(Goal goal)
         {
-            _context.Goals.Update(goal);
-            _context.SaveChangesAsync();
-            return goal;
+
+            var existingGoal = _context.Goals.Find(goal.Id);
+
+            if (existingGoal == null)
+                throw new InvalidOperationException($"Goal with ID {goal.Id} not found");
+
+            existingGoal.Name = goal.Name;
+            existingGoal.Description = goal.Description;
+            existingGoal.startDate = goal.startDate;
+            existingGoal.targetDate = goal.targetDate;
+            existingGoal.endDate = goal.endDate;
+
+            _context.SaveChanges();
+            return existingGoal;
         }
     }
 }

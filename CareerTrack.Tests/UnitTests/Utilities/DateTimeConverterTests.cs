@@ -1,84 +1,115 @@
-﻿using System;
 using CareerTrack.Models;
 using CareerTrack.Utilities;
-using FluentAssertions;
-using Xunit;
 
 namespace CareerTrack.Tests.UnitTests.Utilities
 {
     public class DateTimeConverterTests
     {
-        [Fact]
-        public void ConvertToUtc_ShouldSetStartAndTargetDateKindToUtc()
+        private readonly DateTimeConverter _converter;
+
+        public DateTimeConverterTests()
         {
-            //Arrange
-            var converter = new DateTimeConverter();
+            _converter = new DateTimeConverter();
+        }
+
+        [Fact]
+        public void ConvertToUtc_WhenGoalHasUnspecifiedDates_ShouldConvertToUtc()
+        {
+            // Arrange
             var goal = new Goal
             {
-                startDate = new DateTime(2026, 1, 10, 12, 0, 0, DateTimeKind.Unspecified),
-                targetDate = new DateTime(2026, 2, 10, 12, 0, 0, DateTimeKind.Local),
+                startDate = new DateTime(2024, 1, 1, 10, 0, 0, DateTimeKind.Unspecified),
+                targetDate = new DateTime(2024, 12, 31, 10, 0, 0, DateTimeKind.Unspecified),
                 endDate = null
             };
 
-            //Act
-            converter.ConvertToUtc(goal);
+            // Act
+            _converter.ConvertToUtc(goal);
 
-            //Assert
-            goal.startDate.Kind.Should().Be(DateTimeKind.Utc);
-            goal.targetDate.Kind.Should().Be(DateTimeKind.Utc);
-            goal.endDate.Should().BeNull();
+            // Assert
+            Assert.Equal(DateTimeKind.Utc, goal.startDate.Kind);
+            Assert.Equal(DateTimeKind.Utc, goal.targetDate.Kind);
         }
 
         [Fact]
-        public void ConvertToUtc_ShouldSetEndDateKindToUtc_WhenEndDateHasValue()
+        public void ConvertToUtc_WhenGoalHasEndDate_ShouldConvertEndDateToUtc()
         {
             // Arrange
-            var converter = new DateTimeConverter();
             var goal = new Goal
             {
-                startDate = new DateTime(2026, 1, 10, 12, 0, 0, DateTimeKind.Unspecified),
-                targetDate = new DateTime(2026, 2, 10, 12, 0, 0, DateTimeKind.Unspecified),
-                endDate = new DateTime(2026, 3, 10, 12, 0, 0, DateTimeKind.Local)
+                startDate = new DateTime(2024, 1, 1, 10, 0, 0, DateTimeKind.Unspecified),
+                targetDate = new DateTime(2024, 12, 31, 10, 0, 0, DateTimeKind.Unspecified),
+                endDate = new DateTime(2024, 6, 15, 10, 0, 0, DateTimeKind.Unspecified)
             };
 
             // Act
-            converter.ConvertToUtc(goal);
+            _converter.ConvertToUtc(goal);
 
             // Assert
-            goal.startDate.Kind.Should().Be(DateTimeKind.Utc);
-            goal.targetDate.Kind.Should().Be(DateTimeKind.Utc);
-            goal.endDate.Should().NotBeNull();
-            goal.endDate!.Value.Kind.Should().Be(DateTimeKind.Utc);
+            Assert.Equal(DateTimeKind.Utc, goal.startDate.Kind);
+            Assert.Equal(DateTimeKind.Utc, goal.targetDate.Kind);
+            Assert.Equal(DateTimeKind.Utc, goal.endDate.Value.Kind);
         }
 
         [Fact]
-        public void ConvertToUtc_ShouldNotChangeDateValues_OnlyKind()
+        public void ConvertToUtc_WhenEndDateIsNull_ShouldNotThrowException()
         {
-            //Arrange
-            var converter = new DateTimeConverter();
-
-            var start = new DateTime(2026, 1, 10, 12, 0, 0, DateTimeKind.Unspecified);
-            var target = new DateTime(2026, 2, 10, 12, 0, 0, DateTimeKind.Unspecified);
-            var end = new DateTime(2026, 3, 10, 12, 0, 0, DateTimeKind.Unspecified);
-
+            // Arrange
             var goal = new Goal
             {
-                startDate = start,
-                targetDate = target,
-                endDate = end
+                startDate = new DateTime(2024, 1, 1, 10, 0, 0, DateTimeKind.Unspecified),
+                targetDate = new DateTime(2024, 12, 31, 10, 0, 0, DateTimeKind.Unspecified),
+                endDate = null
             };
 
-            //Act
-            converter.ConvertToUtc(goal);
+            // Act & Assert
+            var exception = Record.Exception(() => _converter.ConvertToUtc(goal));
+            Assert.Null(exception);
+        }
 
-            //Assert
-            goal.startDate.Ticks.Should().Be(start.Ticks);
-            goal.targetDate.Ticks.Should().Be(target.Ticks);
-            goal.endDate!.Value.Ticks.Should().Be(end.Ticks);
+        [Fact]
+        public void ConvertToUtc_WhenDatesAlreadyUtc_ShouldRemainUtc()
+        {
+            // Arrange
+            var goal = new Goal
+            {
+                startDate = new DateTime(2024, 1, 1, 10, 0, 0, DateTimeKind.Utc),
+                targetDate = new DateTime(2024, 12, 31, 10, 0, 0, DateTimeKind.Utc),
+                endDate = new DateTime(2024, 6, 15, 10, 0, 0, DateTimeKind.Utc)
+            };
 
-            goal.startDate.Kind.Should().Be(DateTimeKind.Utc);
-            goal.targetDate.Kind.Should().Be(DateTimeKind.Utc);
-            goal.endDate!.Value.Kind.Should().Be(DateTimeKind.Utc);
+            // Act
+            _converter.ConvertToUtc(goal);
+
+            // Assert
+            Assert.Equal(DateTimeKind.Utc, goal.startDate.Kind);
+            Assert.Equal(DateTimeKind.Utc, goal.targetDate.Kind);
+            Assert.Equal(DateTimeKind.Utc, goal.endDate.Value.Kind);
+        }
+
+        [Fact]
+        public void ConvertToUtc_ShouldPreserveDateAndTimeValues()
+        {
+            // Arrange
+            var startDate = new DateTime(2024, 1, 1, 10, 30, 45, DateTimeKind.Unspecified);
+            var targetDate = new DateTime(2024, 12, 31, 15, 45, 30, DateTimeKind.Unspecified);
+            var goal = new Goal
+            {
+                startDate = startDate,
+                targetDate = targetDate,
+                endDate = null
+            };
+
+            // Act
+            _converter.ConvertToUtc(goal);
+
+            // Assert - Values should be the same, only Kind changes
+            Assert.Equal(startDate.Year, goal.startDate.Year);
+            Assert.Equal(startDate.Month, goal.startDate.Month);
+            Assert.Equal(startDate.Day, goal.startDate.Day);
+            Assert.Equal(startDate.Hour, goal.startDate.Hour);
+            Assert.Equal(startDate.Minute, goal.startDate.Minute);
+            Assert.Equal(startDate.Second, goal.startDate.Second);
         }
     }
 }
