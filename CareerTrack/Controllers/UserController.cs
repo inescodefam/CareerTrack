@@ -34,14 +34,14 @@ namespace CareerTrack.Controllers
 
             string genericLoginError = "Incorrect username or password";
 
-            var username = sentUserToLogin.Username.Trim();
 
-            if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(sentUserToLogin.Password))
+            if (string.IsNullOrWhiteSpace(sentUserToLogin.Username) || string.IsNullOrWhiteSpace(sentUserToLogin.Password))
             {
                 ModelState.AddModelError("", genericLoginError);
                 return View(sentUserToLogin);
             }
 
+            var username = sentUserToLogin.Username.Trim();
 
             var existingUser = _context.Users
                 .FirstOrDefault(u => u.UserName.ToLower() == username.ToLower());
