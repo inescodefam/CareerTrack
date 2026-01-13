@@ -35,7 +35,7 @@ namespace CareerTrack.Controllers
             string genericLoginError = "Incorrect username or password";
 
 
-            if (string.IsNullOrWhiteSpace(sentUserToLogin.Username) || string.IsNullOrWhiteSpace(sentUserToLogin.Password))
+            if (sentUserToLogin.Username == null || sentUserToLogin.Password == null)
             {
                 ModelState.AddModelError("", genericLoginError);
                 return View(sentUserToLogin);

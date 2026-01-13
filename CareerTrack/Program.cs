@@ -1,13 +1,13 @@
+using CareerTrack.Data;
 using CareerTrack.Factory;
 using CareerTrack.Interfaces;
+using CareerTrack.Middlware.CareerTrack.Middleware;
 using CareerTrack.Repository;
+using CareerTrack.Security;
 using CareerTrack.Services;
 using CareerTrack.Utilities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using CareerTrack.Data;
-using CareerTrack.Security;
-using CareerTrack.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -77,10 +77,14 @@ if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
 }
+
+app.UseHttpsRedirection();
+// with extension method - oæu da izgleda ko ostale :)
+app.UseSecurityHeaders();
 app.UseStaticFiles();
-
+// register middleware
+//app.UseMiddleware<SecurityHeadersMiddleware>();
 app.UseRouting();
-
 app.UseAuthentication();
 app.UseAuthorization();
 
