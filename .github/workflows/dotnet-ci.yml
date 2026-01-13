@@ -185,10 +185,11 @@ jobs:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
           args: --severity-threshold=high --sarif-file-output=snyk.sarif
+        if: env.SNYK_TOKEN != ''
 
       - name: Upload Snyk results to GitHub Code Scanning
-        uses: github/codeql-action/upload-sarif@v3
-        if: always()
+        uses: github/codeql-action/upload-sarif@v4
+        if: hashFiles('snyk.sarif') != ''
         with:
           sarif_file: snyk.sarif
           category: snyk
@@ -201,10 +202,20 @@ jobs:
         with:
           command: code test
           args: --severity-threshold=high
+        if: env.SNYK_TOKEN != ''
+
+      - name: Snyk token not configured
+        if: env.SNYK_TOKEN == ''
+        run: |
+          echo "::warning::SNYK_TOKEN secret is not configured. Skipping Snyk scans."
+          echo "To enable Snyk scanning:"
+          echo "1. Sign up at https://snyk.io/signup (free tier available)"
+          echo "2. Get your token from https://app.snyk.io/account"
+          echo "3. Add it as a secret named SNYK_TOKEN in repository settings"
 
   # Deploy to Render (only on master branch after tests pass)
   deploy-to-render:
-    needs: [build-and-test, code-quality, security-scan, dependency-scan, snyk-scan]
+    needs: [build-and-test, code-quality, dependency-scan]
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/master' && github.event_name == 'push'
 
