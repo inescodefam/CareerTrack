@@ -15,7 +15,7 @@ namespace CareerTrack.Controllers
 
     public class GoalsController : Controller
     {
-        //private readonly AppDbContext _context; /// direktna ovisnost o EF Core-u
+        private const string ActionName = "Index";
         private readonly IGoalService _goalService;
         private readonly IUserContextService _userContext;
         private readonly IProgressService _progressService;
@@ -27,11 +27,9 @@ namespace CareerTrack.Controllers
              IGoalService goalService,
             IUserContextService userContext,
             IProgressService progressService,
-            IGoalExportService exportService, 
+            IGoalExportService exportService,
             IGoalFactory goalFactory)
         {
-            //_context = context;
-
             _goalService = goalService;
             _userContext = userContext;
             _progressService = progressService;
@@ -53,7 +51,6 @@ namespace CareerTrack.Controllers
         [Authorize]
         public IActionResult Index()
         {
-            //var goals = _context.Goals.ToList();
             var userId = _userContext.GetCurrentUserId();
             var goals = _goalService.GetUserGoals(userId);
 
@@ -63,24 +60,21 @@ namespace CareerTrack.Controllers
         // GET: GoalsController/Details/5
         public IActionResult Details(int? id)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             if (id == null) return NotFound();
 
             var userId = _userContext.GetCurrentUserId();
-            /// no no, ne smijemo sprezati s bazom
-            //var goal = _context.Goals.FirstOrDefault(m => m.Id == id);
             var goal = _goalService.GetGoalById(id.Value, userId);
 
             if (goal == null) return NotFound();
 
-            var progress = _progressService.GetProgress(id.Value, userId);
-            var history = _progressService.GetProgressHistory(id.Value, userId);
+            var progress = _progressService.GetProgress(goal.Id, userId);
+            var history = _progressService.GetProgressHistory(goal.Id, userId);
 
-            //var viewModel = new GoalDetailsViewModel // todo implement view model
-            //{
-            //    Goal = goal,
-            //    Progress = progress,
-            //    ProgressHistory = history.ToList()
-            //};
+            ViewBag.Progress = progress;
+            ViewBag.ProgressHistory = history;
 
             return View(goal);
         }
@@ -99,25 +93,10 @@ namespace CareerTrack.Controllers
         {
             if (ModelState.IsValid)
             {
-                // S Single Responsibility Principle (SRP) prekršaj
-                // zašto kontroler rukuje datumima
-                //goal.startDate = DateTime.SpecifyKind(goal.startDate, DateTimeKind.Utc);
-                //goal.targetDate = DateTime.SpecifyKind(goal.targetDate, DateTimeKind.Utc);
-
-                //if (goal.endDate.HasValue)
-                //{
-                //    // why ??? stupid AI
-                //    goal.endDate = DateTime.SpecifyKind(goal.endDate.Value, DateTimeKind.Utc);
-                //}
-
-                //// s neba pa u bazu :O ??!!
-                //_context.Add(goal);
-                //_context.SaveChanges();
-
                 var userId = _userContext.GetCurrentUserId();
                 _goalService.CreateGoal(goal, userId);
 
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(ActionName);
             }
             return View(goal);
         }
@@ -125,12 +104,13 @@ namespace CareerTrack.Controllers
         // GET: GoalsController/Edit/5
         public IActionResult Edit(int? id)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             if (id == null)
                 return NotFound();
 
-            //var goal = _context.Goals.Find(id);
-            var userId = _userContext.GetCurrentUserId();
-            var goal = _goalService.GetGoalById(id.Value, userId);
+            var goal = _goalService.GetGoalById(id.Value, _userContext.GetCurrentUserId());
 
             if (goal == null)
                 return NotFound();
@@ -151,17 +131,6 @@ namespace CareerTrack.Controllers
                 try
                 {
 
-                    // goal.startDate = DateTime.SpecifyKind(goal.startDate, DateTimeKind.Utc);    SRP
-                    //  goal.targetDate = DateTime.SpecifyKind(goal.targetDate, DateTimeKind.Utc);   SRP
-
-                    //if (goal.endDate.HasValue) /// SRP
-                    //{
-                    //    goal.endDate = DateTime.SpecifyKind(goal.endDate.Value, DateTimeKind.Utc);
-                    //}
-
-                    // _context.Update(goal);
-                    // _context.SaveChanges();
-
                     var userId = _userContext.GetCurrentUserId();
                     _goalService.UpdateGoal(goal, userId);
                 }
@@ -172,7 +141,7 @@ namespace CareerTrack.Controllers
                         return NotFound();
                     throw;
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(ActionName);
             }
             return View(goal);
         }
@@ -182,13 +151,11 @@ namespace CareerTrack.Controllers
         {
             if (id == null)
                 return NotFound();
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
-            //  var goal = _context.Goals.FirstOrDefault(m => m.Id == id); Dipendency Inversion Principle
-
-            var userId = _userContext.GetCurrentUserId();
-            var goal = _goalService.GetGoalById(id.Value, userId);
+            var goal = _goalService.GetGoalById(id.Value, _userContext.GetCurrentUserId());
             if (goal == null) return NotFound();
-
 
             return View(goal);
         }
@@ -198,17 +165,13 @@ namespace CareerTrack.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(int id)
         {
-            //var goal = _context.Goals.Find(id); //DIP
-            //if (goal != null)
-            //{
-            //    _context.Goals.Remove(goal);
-            //    _context.SaveChanges();
-            //}
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
             var userId = _userContext.GetCurrentUserId();
             _goalService.DeleteGoal(id, userId);
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(ActionName);
         }
 
 
@@ -216,23 +179,19 @@ namespace CareerTrack.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult UpdateProgress(int id, int progressPercentage, string? notes)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
             var userId = _userContext.GetCurrentUserId();
             _progressService.UpdateProgress(id, userId, progressPercentage, notes);
             return RedirectToAction(nameof(Details), new { id });
         }
 
-        //[HttpGet]
-        //public IActionResult Timeline()
-        //{
-        //    var userId = _userContext.GetCurrentUserId();
-        //    var timeline = _timelineService.GenerateTimeline(userId);
-        //    return View(timeline);
-        //}
-
         [HttpGet]
         public IActionResult Print(int id, string format = "PDF")
         {
             var userId = _userContext.GetCurrentUserId();
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
             try
             {
@@ -259,6 +218,8 @@ namespace CareerTrack.Controllers
         // liscov  any goalProgressBAse subclass can be passed here
         public void ShowProgress(IGoalProgress progress)
         {
+            if (!ModelState.IsValid)
+                BadRequest(ModelState);
             Console.WriteLine(progress.GetProgressDescription());
         }
 
@@ -295,11 +256,14 @@ namespace CareerTrack.Controllers
         {
             var userId = _userContext.GetCurrentUserId();
 
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var goal = _goalFactory.CreateGoal(goalType, name, targetDate);
 
             _goalService.CreateGoal(goal, userId);
 
-            return RedirectToAction("Index");
+            return RedirectToAction(ActionName);
         }
 
 
@@ -308,6 +272,8 @@ namespace CareerTrack.Controllers
         public IActionResult CreateValidGoal(Goal goal)
         {
             var currentUser = _userContext.GetCurrentUserId();
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
             var request = new GoalRequest
             {
@@ -330,13 +296,15 @@ namespace CareerTrack.Controllers
             }
 
             TempData["Success"] = result.Message;
-            return RedirectToAction("Index");
+            return RedirectToAction(ActionName);
         }
 
         [HttpPost]
         public IActionResult ValidGoalDeleteDelete(int id)
         {
             var currentUser = _userContext.GetCurrentUserId();
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
             var goal = _goalService.GetGoalById(id, currentUser);
 
             var request = new GoalRequest
@@ -351,11 +319,11 @@ namespace CareerTrack.Controllers
             if (!result.Success)
             {
                 TempData["Error"] = result.Message;
-                return RedirectToAction("Index");
+                return RedirectToAction(ActionName);
             }
 
             TempData["Success"] = result.Message;
-            return RedirectToAction("Index");
+            return RedirectToAction(ActionName);
         }
     }
 }
