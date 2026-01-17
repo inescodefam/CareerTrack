@@ -107,3 +107,5 @@ using (var scope = app.Services.CreateScope())
     await context.Database.EnsureCreatedAsync();
 }
 await app.RunAsync();
+
+public partial class Program { }
