@@ -92,9 +92,130 @@ jobs:
         run: dotnet format --verify-no-changes --verbosity diagnostic
         continue-on-error: true
 
+  # SAST: Static Application Security Testing
+  security-scan:
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: csharp
+          queries: security-extended,security-and-quality
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build for CodeQL analysis
+        run: dotnet build --no-restore --configuration Release
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: "/language:csharp"
+
+  # Dependency scanning for vulnerable packages
+  dependency-scan:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Run dependency audit
+        run: |
+          dotnet list package --vulnerable --include-transitive | tee vulnerabilities.txt
+
+          # Check if vulnerabilities were found
+          if grep -q "has the following vulnerable packages" vulnerabilities.txt; then
+            echo "::error::Vulnerable dependencies detected!"
+            cat vulnerabilities.txt
+            exit 1
+          else
+            echo "No vulnerable dependencies found"
+          fi
+        continue-on-error: false
+
+  # Snyk security scanning - comprehensive vulnerability detection
+  snyk-scan:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Run Snyk to check for vulnerabilities
+        uses: snyk/actions/dotnet@master
+        continue-on-error: true
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          args: --severity-threshold=high --sarif-file-output=snyk.sarif
+        if: env.SNYK_TOKEN != ''
+
+      - name: Upload Snyk results to GitHub Code Scanning
+        uses: github/codeql-action/upload-sarif@v4
+        if: hashFiles('snyk.sarif') != ''
+        with:
+          sarif_file: snyk.sarif
+          category: snyk
+
+      - name: Run Snyk Code (SAST)
+        uses: snyk/actions/dotnet@master
+        continue-on-error: true
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          command: code test
+          args: --severity-threshold=high
+        if: env.SNYK_TOKEN != ''
+
+      - name: Snyk token not configured
+        if: env.SNYK_TOKEN == ''
+        run: |
+          echo "::warning::SNYK_TOKEN secret is not configured. Skipping Snyk scans."
+          echo "To enable Snyk scanning:"
+          echo "1. Sign up at https://snyk.io/signup (free tier available)"
+          echo "2. Get your token from https://app.snyk.io/account"
+          echo "3. Add it as a secret named SNYK_TOKEN in repository settings"
+
   # Deploy to Render (only on master branch after tests pass)
   deploy-to-render:
-    needs: [build-and-test, code-quality]
+    needs: [build-and-test, code-quality, dependency-scan]
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/master' && github.event_name == 'push'
 

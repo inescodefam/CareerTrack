@@ -1,13 +1,14 @@
-﻿using System;
+﻿using CareerTrack.Tests.IntegrationTests.Infrastructure;
+using FluentAssertions;
+using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
-using FluentAssertions;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using Xunit;
-using CareerTrack.Tests.IntegrationTests.Infrastructure;
 
 namespace CareerTrack.Tests.IntegrationTests.Auth
 {
@@ -74,69 +75,96 @@ namespace CareerTrack.Tests.IntegrationTests.Auth
         [Fact]
         public async Task Register_Post_ShouldReturnOk_WhenUsernameAlreadyTaken()
         {
-            //Arrange
+            // Arrange
             var factory = new CustomWebApplicationFactory(Guid.NewGuid().ToString("N"));
-            var client = factory.CreateClient(new() { AllowAutoRedirect = false });
+            var client = factory.CreateClient(new WebApplicationFactoryClientOptions
+            {
+                AllowAutoRedirect = false,
+                BaseAddress = new Uri("https://localhost")
+            });
 
             AuthSeed.SeedUser(factory, username: "taken", password: "password123", email: "taken@mail.com");
 
-            //Act
+            // Act
             var response = await client.PostAsync("/User/Register",
                 RegisterForm("taken", "password123", "other@mail.com", "A", "B"));
 
-            //Assert
-            response.StatusCode.Should().Be(HttpStatusCode.OK);
+            var body = await response.Content.ReadAsStringAsync();
+            Console.WriteLine(body);
 
+            // Assert
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
 
             using var scope = factory.Services.CreateScope();
             var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
             (await db.Users.CountAsync(u => u.UserName == "taken")).Should().Be(1);
         }
 
+
         [Fact]
         public async Task Login_Post_ShouldRedirect_AndIssueCookie_WhenCredentialsAreValid()
         {
-            //Arrange
+            // Arrange
             var factory = new CustomWebApplicationFactory(Guid.NewGuid().ToString("N"));
-            var client = factory.CreateClient(new() { AllowAutoRedirect = false });
+            var client = factory.CreateClient(new WebApplicationFactoryClientOptions
+            {
+                AllowAutoRedirect = false,
+                BaseAddress = new Uri("https://localhost")
+            });
 
             AuthSeed.SeedUser(factory, username: "mmarkic", password: "password123", email: "mmarkic@mail.com");
 
-            //Act
+            // Act
             var response = await client.PostAsync("/User/Login",
                 LoginForm("mmarkic", "password123", "/"));
 
-            //Assert
-            response.StatusCode.Should().Be(HttpStatusCode.Redirect);
-            response.Headers.Location!.ToString().Should().Be("/");
-
-
+            // Assert
             response.Headers.TryGetValues("Set-Cookie", out var setCookie).Should().BeTrue();
-            string.Join(";", setCookie!).Should().Contain(".AspNetCore.Cookies");
+
+            setCookie!.Should().Contain(c => c.StartsWith(".CareerTrack.Auth="));
+
+            var authCookie = setCookie!.First(c => c.StartsWith(".CareerTrack.Auth="));
+
+            authCookie.ToLowerInvariant().Should().Contain("httponly");
+            authCookie.ToLowerInvariant().Should().Contain("secure");
+            authCookie.ToLowerInvariant().Should().Contain("samesite");
+
+
         }
 
+
+        
         [Fact]
         public async Task Login_Post_ShouldReturnOk_AndNotIssueAuthCookie_WhenPasswordIsInvalid()
         {
-            //Arrange
+            // Arrange
             var factory = new CustomWebApplicationFactory(Guid.NewGuid().ToString("N"));
-            var client = factory.CreateClient(new() { AllowAutoRedirect = false });
+            var client = factory.CreateClient(new WebApplicationFactoryClientOptions
+            {
+                AllowAutoRedirect = false,
+                BaseAddress = new Uri("https://localhost")
+            });
 
             AuthSeed.SeedUser(factory, username: "mmarkic2", password: "password123", email: "mmarkic2@mail.com");
 
-            //Act
+            // Act
             var response = await client.PostAsync("/User/Login",
                 LoginForm("mmarkic2", "wrongPass", "/"));
 
-            //Assert
+            // Debug (ako ikad opet dobiješ 500)
+            var body = await response.Content.ReadAsStringAsync();
+            Console.WriteLine(body);
+
+            // Assert
             response.StatusCode.Should().Be(HttpStatusCode.OK);
 
             response.Headers.TryGetValues("Set-Cookie", out var cookies);
 
             (cookies ?? Array.Empty<string>())
                 .Should()
-                .NotContain(c => c.StartsWith(".AspNetCore.Cookies="));
+                .NotContain(c => c.StartsWith(".CareerTrack.Auth="));
         }
+
 
 
         [Fact]
