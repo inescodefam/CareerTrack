@@ -234,10 +234,11 @@ jobs:
       - name: Restore dependencies
         run: dotnet restore
 
-      - name: Begin SonarQube analysis
+      - name: Begin SonarCloud analysis
         run: |
           dotnet sonarscanner begin \
             /k:"${{ vars.SONAR_PROJECT_KEY }}" \
+            /o:"${{ vars.SONAR_ORGANIZATION }}" \
             /d:sonar.host.url="${{ vars.SONAR_HOST_URL }}" \
             /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
 
