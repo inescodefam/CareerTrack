@@ -6,6 +6,7 @@ using CareerTrack.Repository;
 using CareerTrack.Security;
 using CareerTrack.Services;
 using CareerTrack.Utilities;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -42,15 +43,52 @@ builder.Services.AddScoped<IRoleResolver, DefaultRoleResolver>();
 
 
 //cookie auth
-builder.Services.AddAuthentication()
-  .AddCookie(options =>
-  {
-      options.LoginPath = "/User/Login";
-      options.LogoutPath = "/User/Logout";
-      options.AccessDeniedPath = "/User/Forbidden";
-      options.SlidingExpiration = true;
-      options.ExpireTimeSpan = TimeSpan.FromMinutes(20);
-  });
+//builder.Services.AddAuthentication()
+//  .AddCookie(options =>
+//  {
+//      options.LoginPath = "/User/Login";
+//      options.LogoutPath = "/User/Logout";
+//      options.AccessDeniedPath = "/User/Forbidden";
+//      options.SlidingExpiration = true;
+//      options.ExpireTimeSpan = TimeSpan.FromMinutes(20);
+//  });
+
+builder.Services
+    .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        // Paths
+        options.LoginPath = "/User/Login";
+        options.LogoutPath = "/User/Logout";
+        options.AccessDeniedPath = "/User/Forbidden";
+
+        // Lifetime
+        options.SlidingExpiration = true;
+        options.ExpireTimeSpan = TimeSpan.FromMinutes(20);
+
+        // Cookie security
+        options.Cookie.Name = ".CareerTrack.Auth";
+        options.Cookie.HttpOnly = true;
+        options.Cookie.SecurePolicy = CookieSecurePolicy.Always; // <-- Secure flag always
+        options.Cookie.SameSite = SameSiteMode.Strict;           // <-- CSRF hardening (Strict or Lax)
+        options.Cookie.IsEssential = true;                       // avoids being blocked by consent features
+    });
+
+builder.Services.AddAntiforgery(options =>
+{
+    options.Cookie.HttpOnly = true;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always; // <-- Secure flag
+    options.Cookie.SameSite = SameSiteMode.Strict;           // or Lax
+});
+
+
+builder.Services.AddHsts(options =>
+{
+    options.Preload = true;
+    options.IncludeSubDomains = true;
+    options.MaxAge = TimeSpan.FromDays(365);
+});
+
 
 // http context
 builder.Services.AddHttpContextAccessor();
@@ -71,6 +109,15 @@ builder.Services.AddScoped<IDateTimeConverter, DateTimeConverter>();
 
 
 var app = builder.Build();
+
+if (!app.Environment.IsDevelopment())
+{
+    app.UseExceptionHandler("/Home/Error");
+    app.UseHsts();
+}
+
+app.UseHttpsRedirection();
+
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
