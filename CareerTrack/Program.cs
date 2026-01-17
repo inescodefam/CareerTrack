@@ -106,6 +106,4 @@ using (var scope = app.Services.CreateScope())
     var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     await context.Database.EnsureCreatedAsync();
 }
-
 await app.RunAsync();
-public static partial class Program { }
