@@ -216,12 +216,13 @@ jobs:
   # SonarQube code quality and security analysis
   sonarqube:
     runs-on: ubuntu-latest
-
+    env:
+      SONAR_CI_SCAN: ${{ vars.SONAR_CI_SCAN }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Full history for better analysis
+          fetch-depth: 0 # Full history for better analysis
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
