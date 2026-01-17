@@ -109,7 +109,7 @@ jobs:
 
           http_status=$(echo "$response" | grep "HTTP_STATUS" | cut -d':' -f2)
 
-          if [ "$http_status" -eq 200 ] || [ "$http_status" -eq 201 ]; then
+          if [ "$http_status" -eq 200 ] || [ "$http_status" -eq 201 ] ||  [ "$http_status" -eq 202 ]; then
             echo "Deployment triggered successfully!"
             echo "Check deployment status at: https://dashboard.render.com"
           else
