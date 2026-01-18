@@ -5,7 +5,7 @@ namespace CareerTrack.Models
 {
     public class User
     {
-        public int Id { get; set; }
+        public int? Id { get; set; }
 
         [Required]
         [StringLength(50)]
@@ -34,7 +34,7 @@ namespace CareerTrack.Models
         [StringLength(20)]
         public string? Phone { get; set; }
 
-        public bool IsAdmin { get; set; }
+        public bool? IsAdmin { get; set; }
     }
 
     // interface segregation principle
