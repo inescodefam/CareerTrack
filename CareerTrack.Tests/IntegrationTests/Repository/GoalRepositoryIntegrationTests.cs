@@ -2,7 +2,6 @@ using CareerTrack.Models;
 using CareerTrack.Repository;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
-using Xunit;
 
 namespace CareerTrack.Tests.IntegrationTests.Repository
 {
@@ -10,6 +9,7 @@ namespace CareerTrack.Tests.IntegrationTests.Repository
     {
         private readonly AppDbContext _context;
         private readonly GoalRepository _repository;
+
 
         public GoalRepositoryIntegrationTests()
         {
@@ -23,8 +23,17 @@ namespace CareerTrack.Tests.IntegrationTests.Repository
 
         public void Dispose()
         {
-            _context.Database.EnsureDeleted();
-            _context.Dispose();
+
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _context?.Dispose();
+
+            }
         }
 
         #region Create Tests
@@ -379,7 +388,7 @@ namespace CareerTrack.Tests.IntegrationTests.Repository
         #region Update Tests
 
         [Fact]
-        public async Task Update_ShouldModifyExistingGoal()
+        public void Update_ShouldModifyExistingGoal()
         {
             // Arrange
             var goal = new Goal
@@ -400,7 +409,6 @@ namespace CareerTrack.Tests.IntegrationTests.Repository
 
             // Act
             _repository.Update(goal);
-            await Task.Delay(100); // Small delay to ensure async SaveChanges completes
 
             // Assert
             var updated = _context.Goals.Find(goal.Id);
@@ -410,7 +418,7 @@ namespace CareerTrack.Tests.IntegrationTests.Repository
         }
 
         [Fact]
-        public async Task Update_ShouldReturnUpdatedGoal()
+        public void Update_ShouldReturnUpdatedGoal()
         {
             // Arrange
             var goal = new Goal
@@ -428,7 +436,6 @@ namespace CareerTrack.Tests.IntegrationTests.Repository
 
             // Act
             var result = _repository.Update(goal);
-            await Task.Delay(100); // Small delay to ensure async SaveChanges completes
 
             // Assert
             result.Should().NotBeNull();
