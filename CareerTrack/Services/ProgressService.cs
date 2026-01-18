@@ -47,6 +47,7 @@ namespace CareerTrack.Services
                 throw new InvalidOperationException("Progress record not found");
 
             var oldPercentage = progress.progressData.ProgressPercentage;
+
             progress.progressData.ProgressPercentage = percentage;
             progress.progressData.LastUpdated = DateTime.UtcNow;
             progress.Notes = notes;
