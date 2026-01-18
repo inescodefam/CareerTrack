@@ -28,13 +28,11 @@ namespace CareerTrack.Services
 
             if (exporter == null)
                 throw new ArgumentException($"Format '{format}' not supported");
+            var user = _context.Users.Find(userId);
+            if (user == null) throw new UnauthorizedAccessException();
 
             var goal = _goalService.GetGoalById(goalId, userId);
             if (goal == null) throw new UnauthorizedAccessException();
-
-            var user = _context.Users.Find(userId);
-
-            // interface segretation
 
             ExportableUser userData = new(user);
             ExportableGoal data = new(goal);
