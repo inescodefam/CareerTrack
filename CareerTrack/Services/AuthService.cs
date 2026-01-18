@@ -46,7 +46,7 @@ namespace CareerTrack.Services
             string role = _roleResolver.ResolveRole(user);
             await _cookie.SignInAsync(user, role);
 
-            return new(true, null, loginVM.ReturnUrl ?? "/");
+            return new(true, null, userLoginVM.ReturnUrl ?? "/");
         }
 
         public async Task LogoutAsync()
@@ -67,17 +67,17 @@ namespace CareerTrack.Services
 
 
             var salt = PasswordHashProvider.GetSalt();
-            var hash = PasswordHashProvider.GetHash(registerVM.Password, salt);
+            var hash = PasswordHashProvider.GetHash(vm.Password, salt);
 
             var newUser = new User
             {
-                FirstName = registerVM.FirstName,
-                LastName = registerVM.LastName,
+                FirstName = vm.FirstName,
+                LastName = vm.LastName,
                 UserName = username,
                 Email = email,
                 PasswordSalt = salt,
                 PasswordHash = hash,
-                Phone = string.IsNullOrWhiteSpace(registerVM.Phone) ? null : registerVM.Phone.Trim(),
+                Phone = string.IsNullOrWhiteSpace(vm.Phone) ? null : vm.Phone.Trim(),
                 IsAdmin = false
             };
 

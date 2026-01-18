@@ -231,7 +231,7 @@ namespace CareerTrack.Tests.UnitTests.Services
             var exportData = new ExportData { User = user, Goal = goal };
 
             // Act
-            var result = _excelExporter.Export(exportData);
+            var result = ExcelExporter.Export(exportData);
 
             // Assert
             result.Should().NotBeNull();
@@ -262,7 +262,7 @@ namespace CareerTrack.Tests.UnitTests.Services
             var exportData = new ExportData { User = user, Goal = goal };
 
             // Act
-            var result = _excelExporter.Export(exportData);
+            var result = ExcelExporter.Export(exportData);
             var content = System.Text.Encoding.UTF8.GetString(result);
 
             // Assert
@@ -296,7 +296,7 @@ namespace CareerTrack.Tests.UnitTests.Services
             var exportData = new ExportData { User = user, Goal = goal };
 
             // Act
-            var result = _excelExporter.Export(exportData);
+            var result = ExcelExporter.Export(exportData);
             var content = System.Text.Encoding.UTF8.GetString(result);
 
             // Assert

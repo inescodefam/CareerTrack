@@ -16,7 +16,6 @@ namespace CareerTrack.Services
         {
             _exporters = exporters;
             _goalService = goalService;
-            _progressService = progressService;
             _context = context;
         }
 
