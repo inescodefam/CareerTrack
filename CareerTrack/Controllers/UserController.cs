@@ -44,7 +44,7 @@ namespace CareerTrack.Controllers
             var username = sentUserToLogin.Username.Trim();
 
             var existingUser = _context.Users
-                .FirstOrDefault(u => u.UserName.ToLower() == username.ToLower());
+                .FirstOrDefault(u => u.UserName.Equals(username, StringComparison.CurrentCultureIgnoreCase));
 
 
             if (existingUser == null)

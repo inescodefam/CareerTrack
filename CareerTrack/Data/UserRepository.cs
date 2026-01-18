@@ -31,7 +31,7 @@ namespace CareerTrack.Data
         public Task<User?> FindByUsernameAsync(string username)
         {
             return _context.Users.
-                FirstOrDefaultAsync(u => u.UserName.ToUpper() == username.ToUpper());
+                FirstOrDefaultAsync(u => u.UserName.Equals(username, StringComparison.CurrentCultureIgnoreCase));
         }
 
         public Task SaveChangesAsync()
