@@ -21,18 +21,17 @@ namespace CareerTrack.Controllers
         [HttpGet]
         public IActionResult Login(string returnUrl)
         {
-            var loginVm = new UserLoginVM
-            {
-                ReturnUrl = returnUrl
-            };
+
             return View();
         }
 
         [HttpPost]
         public IActionResult Login(UserLoginVM sentUserToLogin)
         {
+            if(!ModelState.IsValid)
+                return View(sentUserToLogin);
 
-            string genericLoginError = "Incorrect username or password";
+                string genericLoginError = "Incorrect username or password";
 
 
             if (sentUserToLogin == null || string.IsNullOrWhiteSpace(sentUserToLogin.Username) ||

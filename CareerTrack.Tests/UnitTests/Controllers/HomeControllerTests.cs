@@ -10,13 +10,11 @@ namespace CareerTrack.Tests.UnitTests.Controllers
 {
     public class HomeControllerTests
     {
-        private readonly Mock<ILogger<HomeController>> _mockLogger;
         private readonly HomeController _controller;
 
         public HomeControllerTests()
         {
-            _mockLogger = new Mock<ILogger<HomeController>>();
-            _controller = new HomeController(_mockLogger.Object);
+            _controller = new HomeController();
         }
 
         [Fact]
@@ -103,12 +101,6 @@ namespace CareerTrack.Tests.UnitTests.Controllers
             Assert.True(cacheAttribute.NoStore);
         }
 
-        //[Fact]
-        //public void Constructor_WithNullLogger_ShouldThrowArgumentNullException()
-        //{
-        //    // Act & Assert
-        //    Assert.Throws<ArgumentNullException>(() => new HomeController(null!));
-        //}
 
         [Fact]
         public void Index_DoesNotRequireAuthentication()
