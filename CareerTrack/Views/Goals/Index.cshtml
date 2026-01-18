@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "My Goals";
+    var now = DateTime.UtcNow;
 }
 
 <div class="container mt-4">
@@ -19,12 +20,12 @@
         <div class="row">
             @foreach (var goal in Model)
             {
-                var daysRemaining = (goal.targetDate - DateTime.Now).Days;
+                var daysRemaining = (goal.targetDate - now).Days;
                 var progressPercentage = 0;
                 if (goal.endDate != DateTime.MinValue && goal.endDate > goal.startDate)
                 {
                     var totalDays = (goal.endDate.Value - goal.startDate).TotalDays;
-                    var elapsedDays = (DateTime.Now - goal.startDate).TotalDays;
+                    var elapsedDays = (now - goal.startDate).TotalDays;
                     progressPercentage = (int)Math.Min(100, Math.Max(0, (elapsedDays / totalDays) * 100));
                 }
 
@@ -74,12 +75,12 @@
                             @if (progressPercentage > 0)
                             {
                                 <div class="progress mb-3" style="height: 8px;">
-                                    <div class="progress-bar" role="progressbar"
+                                    <progress
                                          style="width: @progressPercentage%"
                                          aria-valuenow="@progressPercentage"
                                          aria-valuemin="0"
                                          aria-valuemax="100">
-                                    </div>
+                                    </progress>
                                 </div>
                                 <small class="text-muted">Progress: @progressPercentage%</small>
                             }

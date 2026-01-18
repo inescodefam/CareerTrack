@@ -6,6 +6,8 @@
     var isCompleted = Model.endDate != DateTime.MinValue;
     var progressPercentage = 0;
 
+    var now = DateTime.Now;
+
     if (Model.endDate != DateTime.MinValue && Model.endDate > Model.startDate)
     {
         progressPercentage = 100;
@@ -13,9 +15,17 @@
     else if (Model.targetDate > Model.startDate)
     {
         var totalDays = (Model.targetDate - Model.startDate).TotalDays;
-        var elapsedDays = (DateTime.Now - Model.startDate).TotalDays;
+        var elapsedDays = (now - Model.startDate).TotalDays;
         progressPercentage = (int)Math.Min(100, Math.Max(0, (elapsedDays / totalDays) * 100));
     }
+    var progressPercentageStyle = progressPercentage switch
+    {
+        >= 75 => "bg-success",
+        >= 50 => "bg-info",
+        >= 25 => "bg-warning",
+        _ => "bg-danger"
+    };
+
 }
 
 <div class="container mt-4">
@@ -93,14 +103,13 @@
                                 <span class="text-muted">@progressPercentage%</span>
                             </div>
                             <div class="progress" style="height: 25px;">
-                                <div class="progress-bar progress-bar-striped progress-bar-animated @(progressPercentage >= 75 ? "bg-success" : progressPercentage >= 50 ? "bg-info" : progressPercentage >= 25 ? "bg-warning" : "bg-danger")"
-                                     role="progressbar"
+                                <progress class="progress-bar-striped progress-bar-animated @(progressPercentage >= 75 ? "bg-success" : $"{ progressPercentageStyle}")"
                                      style="width: @progressPercentage%"
                                      aria-valuenow="@progressPercentage"
                                      aria-valuemin="0"
                                      aria-valuemax="100">
                                     @progressPercentage%
-                                </div>
+                                </progress>
                             </div>
                         </div>
 
