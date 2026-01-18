@@ -23,7 +23,7 @@ namespace CareerTrack.Tests.UnitTests.Controllers
         private readonly GoalsController _controller;
 
         private bool _disposed;
-
+        private static readonly string[] value = new[] { "PDF", "Excel" };
 
         protected virtual void Dispose(bool disposing)
         {
@@ -611,7 +611,7 @@ namespace CareerTrack.Tests.UnitTests.Controllers
             var fileBytes = new byte[] { 1, 2, 3 };
 
             _mockExportService.Setup(s => s.ExportGoal(goalId, userId, "PDF")).Returns(fileBytes);
-            _mockExportService.Setup(s => s.GetAvailableFormats()).Returns(new[] { "PDF", "Excel" });
+            _mockExportService.Setup(s => s.GetAvailableFormats()).Returns(value);
 
             // Act
             var result = _controller.Print(goalId); // No format specified, should default to PDF
