@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
@@ -9,6 +8,8 @@ namespace CareerTrack.Migrations
     /// <inheritdoc />
     public partial class AddNewTables : Migration
     {
+        private const string INTEGER = "integer";
+
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -16,9 +17,9 @@ namespace CareerTrack.Migrations
                 name: "GoalProgressData",
                 columns: table => new
                 {
-                    id = table.Column<int>(type: "integer", nullable: false)
+                    id = table.Column<int>(type: INTEGER, nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    ProgressPercentage = table.Column<int>(type: "integer", nullable: false),
+                    ProgressPercentage = table.Column<int>(type: INTEGER, nullable: false),
                     LastUpdated = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
@@ -30,11 +31,11 @@ namespace CareerTrack.Migrations
                 name: "GoalProgress",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
+                    Id = table.Column<int>(type: INTEGER, nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    GoalId = table.Column<int>(type: "integer", nullable: false),
-                    UserId = table.Column<int>(type: "integer", nullable: false),
-                    progressDataid = table.Column<int>(type: "integer", nullable: false),
+                    GoalId = table.Column<int>(type: INTEGER, nullable: false),
+                    UserId = table.Column<int>(type: INTEGER, nullable: false),
+                    progressDataid = table.Column<int>(type: INTEGER, nullable: false),
                     Notes = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
