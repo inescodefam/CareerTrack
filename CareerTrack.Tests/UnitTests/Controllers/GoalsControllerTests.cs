@@ -24,6 +24,7 @@ namespace CareerTrack.Tests.UnitTests.Controllers
 
         private bool _disposed;
 
+
         protected virtual void Dispose(bool disposing)
         {
             if (!_disposed)
@@ -548,7 +549,7 @@ namespace CareerTrack.Tests.UnitTests.Controllers
             var fileBytes = new byte[] { 1, 2, 3, 4, 5 };
 
             _mockExportService.Setup(s => s.ExportGoal(goalId, userId, format)).Returns(fileBytes);
-            _mockExportService.Setup(s => s.GetAvailableFormats()).Returns(new[] { "PDF", "Excel" });
+            _mockExportService.Setup(s => s.GetAvailableFormats()).Returns(AvailableExportFormats);
 
             // Act
             var result = _controller.Print(goalId, format);
@@ -570,7 +571,7 @@ namespace CareerTrack.Tests.UnitTests.Controllers
             var fileBytes = new byte[] { 1, 2, 3 };
 
             _mockExportService.Setup(s => s.ExportGoal(goalId, userId, format)).Returns(fileBytes);
-            _mockExportService.Setup(s => s.GetAvailableFormats()).Returns(new[] { "PDF", "EXCEL" });
+            _mockExportService.Setup(s => s.GetAvailableFormats()).Returns(AvailableExportFormats);
 
             // Act
             var result = _controller.Print(goalId, format);
