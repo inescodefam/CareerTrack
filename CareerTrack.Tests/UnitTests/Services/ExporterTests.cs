@@ -2,7 +2,6 @@ using CareerTrack.Models;
 using CareerTrack.Services;
 using CareerTrack.Services.ExporterData;
 using FluentAssertions;
-using Xunit;
 
 namespace CareerTrack.Tests.UnitTests.Services
 {
@@ -54,8 +53,8 @@ namespace CareerTrack.Tests.UnitTests.Services
                 Id = 1,
                 Name = "Test Goal",
                 Description = "Test Description",
-                startDate = new DateTime(2024, 1, 1),
-                targetDate = new DateTime(2024, 12, 31),
+                startDate = new DateTime(2024, 1, 1, 2, 2, 2, DateTimeKind.Utc),
+                targetDate = new DateTime(2024, 12, 31, 2, 2, 2, DateTimeKind.Utc),
                 UserId = 1
             };
 
@@ -225,8 +224,8 @@ namespace CareerTrack.Tests.UnitTests.Services
             var goal = new Goal
             {
                 Name = "Test Goal",
-                startDate = new DateTime(2024, 1, 1),
-                targetDate = new DateTime(2024, 12, 31)
+                startDate = new DateTime(2024, 1, 1, 2, 2, 2, DateTimeKind.Utc),
+                targetDate = new DateTime(2024, 12, 31, 2, 2, 2, DateTimeKind.Utc)
             };
             var exportData = new ExportData { User = user, Goal = goal };
 
@@ -290,8 +289,8 @@ namespace CareerTrack.Tests.UnitTests.Services
             var goal = new Goal
             {
                 Name = "Complete Testing",
-                startDate = new DateTime(2024, 6, 1),
-                targetDate = new DateTime(2024, 12, 31)
+                startDate = new DateTime(2024, 6, 1, 2, 2, 2, DateTimeKind.Utc),
+                targetDate = new DateTime(2024, 12, 31, 2, 2, 2, DateTimeKind.Utc)
             };
             var exportData = new ExportData { User = user, Goal = goal };
 
