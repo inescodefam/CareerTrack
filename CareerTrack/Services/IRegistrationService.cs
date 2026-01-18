@@ -4,6 +4,6 @@ namespace CareerTrack.Services
 {
     public interface IRegistrationService
     {
-        Task<AuthResult> RegisterAsync(UserRegisterVM vm);
+        Task<AuthResult> RegisterAsync(UserRegisterVM userRegisterVM);
     }
 }

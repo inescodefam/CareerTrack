@@ -1,10 +1,13 @@
 ﻿using CareerTrack.Services.ExporterData;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace CareerTrack.Models
 {
     public class User
     {
+       
+        [JsonRequired]
         public int? Id { get; set; }
 
         [Required]
@@ -30,6 +33,7 @@ namespace CareerTrack.Models
         [StringLength(50)]
         public string LastName { get; set; } = null!;
 
+        [JsonRequired]
         [Phone]
         [StringLength(20)]
         public string? Phone { get; set; }
