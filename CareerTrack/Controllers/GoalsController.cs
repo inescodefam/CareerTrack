@@ -121,8 +121,10 @@ namespace CareerTrack.Controllers
         // POST: GoalsController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, [Bind("Id,Name,Description,targetDate,startDate,endDate")] Goal goal)
+        public IActionResult Edit(int? id, [Bind("Id,Name,Description,targetDate,startDate,endDate")] Goal goal)
         {
+            if (id == null)
+                return NotFound();
             if (id != goal.Id)
                 return NotFound();
 
@@ -163,13 +165,15 @@ namespace CareerTrack.Controllers
         // POST: GoalsController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult DeleteConfirmed(int id)
+        public IActionResult DeleteConfirmed(int? id)
         {
+            if (id == null)
+                return NotFound();
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
             var userId = _userContext.GetCurrentUserId();
-            _goalService.DeleteGoal(id, userId);
+            _goalService.DeleteGoal(id.Value, userId);
 
             return RedirectToAction(ActionName);
         }
@@ -177,25 +181,29 @@ namespace CareerTrack.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult UpdateProgress(int id, int progressPercentage, string? notes)
+        public IActionResult UpdateProgress(int? id, int? progressPercentage, string? notes)
         {
+            if (id == null || progressPercentage == null)
+                return NotFound();
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
             var userId = _userContext.GetCurrentUserId();
-            _progressService.UpdateProgress(id, userId, progressPercentage, notes);
+            _progressService.UpdateProgress(id.Value, userId, progressPercentage.Value, notes);
             return RedirectToAction(nameof(Details), new { id });
         }
 
         [HttpGet]
-        public IActionResult Print(int id, string format = "PDF")
+        public IActionResult Print(int? id, string format = "PDF")
         {
+            if (id == null)
+                return NotFound();
             var userId = _userContext.GetCurrentUserId();
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
             try
             {
-                var fileBytes = _exportService.ExportGoal(id, userId, format);
+                var fileBytes = _exportService.ExportGoal(id.Value, userId, format);
                 var exporter = _exportService.GetAvailableFormats().Contains(format)
                     ? format.ToLower() : "pdf";
 
@@ -300,12 +308,14 @@ namespace CareerTrack.Controllers
         }
 
         [HttpPost]
-        public IActionResult ValidGoalDeleteDelete(int id)
+        public IActionResult ValidGoalDeleteDelete(int? id)
         {
+            if (id == null)
+                return NotFound();
             var currentUser = _userContext.GetCurrentUserId();
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-            var goal = _goalService.GetGoalById(id, currentUser);
+            var goal = _goalService.GetGoalById(id.Value, currentUser);
 
             var request = new GoalRequest
             {
