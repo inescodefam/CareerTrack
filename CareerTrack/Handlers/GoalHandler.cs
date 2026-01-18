@@ -5,7 +5,7 @@ namespace CareerTrack.Handlers
 {
     public abstract class GoalHandler : IGoalHandler
     {
-        private IGoalHandler _nextHandler;
+        private IGoalHandler? _nextHandler;
 
         public IGoalHandler SetNext(IGoalHandler handler)
         {
