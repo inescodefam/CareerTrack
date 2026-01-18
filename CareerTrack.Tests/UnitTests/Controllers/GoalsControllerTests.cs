@@ -1009,7 +1009,7 @@ namespace CareerTrack.Tests.UnitTests.Controllers
             var goalId = 999;
             var userId = 1;
 
-            _mockGoalService.Setup(s => s.GetGoalById(goalId, userId)).Returns((Goal?)null);
+            _mockGoalService.Setup(s => s.GetGoalById(goalId, userId)).Returns(null);
 
             // Act
             var result = _controller.ValidGoalDeleteDelete(goalId);
