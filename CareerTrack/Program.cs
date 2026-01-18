@@ -2,6 +2,7 @@ using CareerTrack.Data;
 using CareerTrack.Factory;
 using CareerTrack.Interfaces;
 using CareerTrack.Middlware.CareerTrack.Middleware;
+using CareerTrack.Models;
 using CareerTrack.Repository;
 using CareerTrack.Security;
 using CareerTrack.Services;

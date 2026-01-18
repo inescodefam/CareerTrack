@@ -1,4 +1,5 @@
-﻿using CareerTrack.Tests.IntegrationTests.Infrastructure;
+﻿using CareerTrack.Models;
+using CareerTrack.Tests.IntegrationTests.Infrastructure;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;

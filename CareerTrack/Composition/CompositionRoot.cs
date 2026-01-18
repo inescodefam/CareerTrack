@@ -1,4 +1,5 @@
 ﻿using CareerTrack.Data;
+using CareerTrack.Models;
 using CareerTrack.Security;
 using CareerTrack.Services;
 using Microsoft.AspNetCore.Identity;
