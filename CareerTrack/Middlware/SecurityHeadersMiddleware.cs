@@ -14,7 +14,7 @@
             public async Task InvokeAsync(HttpContext context)
             {
 
-                context.Response.Headers["Content-Security-Policy"] =
+                context.Response.Headers.ContentSecurityPolicy =
                     "default-src 'self'; " +
                     "script-src 'self'; " +
                     "style-src 'self' https://cdn.jsdelivr.net; " +
@@ -25,9 +25,9 @@
                     "base-uri 'self'; " +
                     "form-action 'self'";
 
-                context.Response.Headers["X-Content-Type-Options"] = "nosniff";
+                context.Response.Headers.XContentTypeOptions = "nosniff";
 
-                context.Response.Headers["X-Frame-Options"] = "DENY";
+                context.Response.Headers.XFrameOptions = "DENY";
 
                 context.Response.Headers["Referrer-Policy"] = "strict-origin-when-cross-origin";
 

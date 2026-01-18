@@ -20,7 +20,7 @@ namespace CareerTrack.Handlers
             if (request.Goal.startDate >= request.Goal.targetDate)
                 result.Errors.Add("Start date must be before target date");
 
-            if (result.Errors.Any())
+            if (result.Errors.Count != 0)
             {
                 result.Success = false;
                 result.Message = "Validation failed";
