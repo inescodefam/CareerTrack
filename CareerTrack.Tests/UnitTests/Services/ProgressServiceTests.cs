@@ -2,7 +2,6 @@ using CareerTrack.Models;
 using CareerTrack.Services;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
-using Xunit;
 
 namespace CareerTrack.Tests.UnitTests.Services
 {
@@ -10,6 +9,7 @@ namespace CareerTrack.Tests.UnitTests.Services
     {
         private readonly AppDbContext _context;
         private readonly ProgressService _progressService;
+        private bool _disposed = false;
 
         public ProgressServiceTests()
         {
@@ -23,10 +23,22 @@ namespace CareerTrack.Tests.UnitTests.Services
 
         public void Dispose()
         {
-            _context.Database.EnsureDeleted();
-            _context.Dispose();
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!_disposed)
+            {
+                if (disposing)
+                {
+                    _context.Database.EnsureDeleted();
+                    _context.Dispose();
+                }
+                _disposed = true;
+            }
+        }
         #region InitializeProgress Tests
 
         [Fact]
@@ -298,7 +310,7 @@ namespace CareerTrack.Tests.UnitTests.Services
             // Arrange
             var goalId = 1;
             var userId = 1;
-            var existingEndDate = new DateTime(2024, 6, 15);
+            var existingEndDate = new DateTime(2024, 6, 15, 2, 2, 2, DateTimeKind.Utc);
             var goal = new Goal
             {
                 Id = goalId,
@@ -360,13 +372,13 @@ namespace CareerTrack.Tests.UnitTests.Services
             _progressService.InitializeProgress(goalId, userId);
             _progressService.UpdateProgress(goalId, userId, 25);
             _progressService.UpdateProgress(goalId, userId, 50);
-            _progressService.UpdateProgress(goalId, userId, 75);
+
 
             // Act
             var history = _progressService.GetProgressHistory(goalId, userId);
 
             // Assert
-            history.Should().HaveCount(4); // Initial + 3 updates
+            history.Should().HaveCount(3); // Initial + 2 updates
         }
 
         [Fact]

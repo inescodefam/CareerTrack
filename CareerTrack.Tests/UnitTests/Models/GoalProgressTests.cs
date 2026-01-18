@@ -1,6 +1,5 @@
 using CareerTrack.Models;
 using FluentAssertions;
-using Xunit;
 
 namespace CareerTrack.Tests.UnitTests.Models
 {
@@ -245,7 +244,7 @@ namespace CareerTrack.Tests.UnitTests.Models
         public void GoalCompletionProgressStatus_GetProgressDescription_WhenCompleted_ShouldShowCompletionDate()
         {
             // Arrange
-            var completionDate = new DateTime(2024, 6, 15);
+            var completionDate = new DateTime(2024, 6, 15, 2, 2, 2, DateTimeKind.Utc);
             var completionStatus = new GoalCompletionProgressStatus
             {
                 Id = 1,

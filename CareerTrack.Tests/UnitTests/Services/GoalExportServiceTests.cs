@@ -4,7 +4,6 @@ using CareerTrack.Services.ExporterData;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Moq;
-using Xunit;
 
 namespace CareerTrack.Tests.UnitTests.Services
 {
@@ -16,6 +15,8 @@ namespace CareerTrack.Tests.UnitTests.Services
         private readonly Mock<IExporter> _mockExcelExporter;
         private readonly AppDbContext _context;
         private readonly GoalExportService _goalExportService;
+        private bool _disposed;
+
 
         public GoalExportServiceTests()
         {
@@ -53,8 +54,21 @@ namespace CareerTrack.Tests.UnitTests.Services
 
         public void Dispose()
         {
-            _context.Database.EnsureDeleted();
-            _context.Dispose();
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!_disposed)
+            {
+                if (disposing)
+                {
+                    _context.Database.EnsureDeleted();
+                    _context.Dispose();
+                }
+                _disposed = true;
+            }
         }
 
         #region ExportGoal Tests
@@ -278,7 +292,8 @@ namespace CareerTrack.Tests.UnitTests.Services
             var result = _goalExportService.GetAvailableFormats().ToList();
 
             // Assert
-            result.Should().BeEquivalentTo(new[] { "PDF", "Excel" });
+            string[] expectation = ["PDF", "Excel"];
+            result.Should().BeEquivalentTo(expectation);
         }
 
         [Fact]
