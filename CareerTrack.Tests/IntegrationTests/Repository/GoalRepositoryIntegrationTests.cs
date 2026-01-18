@@ -111,7 +111,7 @@ namespace CareerTrack.Tests.IntegrationTests.Repository
                 Name = "Test Goal",
                 startDate = DateTime.UtcNow,
                 targetDate = DateTime.UtcNow.AddDays(30),
-                UserId = user.Id
+                UserId = user.Id!.Value
             };
 
             _context.Users.Add(user);
@@ -147,7 +147,7 @@ namespace CareerTrack.Tests.IntegrationTests.Repository
                 Name = "Test Goal",
                 startDate = DateTime.UtcNow,
                 targetDate = DateTime.UtcNow.AddDays(30),
-                UserId = user.Id
+                UserId = user.Id!.Value
             };
 
             _context.Users.Add(user);
@@ -177,7 +177,7 @@ namespace CareerTrack.Tests.IntegrationTests.Repository
                 Name = "User 1 Goal",
                 startDate = DateTime.UtcNow,
                 targetDate = DateTime.UtcNow.AddDays(30),
-                UserId = user.Id
+                UserId = user.Id!.Value
             };
 
             _context.Users.Add(user);
@@ -185,7 +185,7 @@ namespace CareerTrack.Tests.IntegrationTests.Repository
             _context.SaveChanges();
 
             // Act
-            var result = _repository.GetByIdAndUser(goal.Id, user.Id);
+            var result = _repository.GetByIdAndUser(goal.Id, user.Id.Value);
 
             // Assert
             result.Should().NotBeNull();
@@ -204,7 +204,7 @@ namespace CareerTrack.Tests.IntegrationTests.Repository
                 Name = "User 1 Goal",
                 startDate = DateTime.UtcNow,
                 targetDate = DateTime.UtcNow.AddDays(30),
-                UserId = user1.Id
+                UserId = user1.Id!.Value
             };
 
             _context.Users.AddRange(user1, user2);
@@ -212,7 +212,7 @@ namespace CareerTrack.Tests.IntegrationTests.Repository
             _context.SaveChanges();
 
             // Act
-            var result = _repository.GetByIdAndUser(goal.Id, user2.Id);
+            var result = _repository.GetByIdAndUser(goal.Id, user2.Id!.Value);
 
             // Assert
             result.Should().BeNull();
@@ -238,7 +238,7 @@ namespace CareerTrack.Tests.IntegrationTests.Repository
                 Name = "Test Goal",
                 startDate = DateTime.UtcNow,
                 targetDate = DateTime.UtcNow.AddDays(30),
-                UserId = user.Id
+                UserId = user.Id!.Value
             };
 
             _context.Users.Add(user);
@@ -246,7 +246,7 @@ namespace CareerTrack.Tests.IntegrationTests.Repository
             _context.SaveChanges();
 
             // Act
-            var result = _repository.GetByIdAndUser(goal.Id, user.Id);
+            var result = _repository.GetByIdAndUser(goal.Id, user.Id.Value);
 
             // Assert
             result.Should().NotBeNull();
@@ -265,9 +265,9 @@ namespace CareerTrack.Tests.IntegrationTests.Repository
             var user = new User { Id = 1, UserName = "User 1", FirstName = "User 1", LastName = "User", Email = "test@example.com", PasswordHash = "hash", PasswordSalt = "salt" };
             var goals = new List<Goal>
             {
-                new Goal { Name = "Goal 1", UserId = user.Id, startDate = DateTime.UtcNow, targetDate = DateTime.UtcNow.AddDays(10) },
-                new Goal { Name = "Goal 2", UserId = user.Id, startDate = DateTime.UtcNow, targetDate = DateTime.UtcNow.AddDays(20) },
-                new Goal { Name = "Goal 3", UserId = user.Id, startDate = DateTime.UtcNow, targetDate = DateTime.UtcNow.AddDays(30) }
+                new Goal { Name = "Goal 1", UserId = user.Id!.Value, startDate = DateTime.UtcNow, targetDate = DateTime.UtcNow.AddDays(10) },
+                new Goal { Name = "Goal 2", UserId = user.Id.Value, startDate = DateTime.UtcNow, targetDate = DateTime.UtcNow.AddDays(20) },
+                new Goal { Name = "Goal 3", UserId = user.Id.Value, startDate = DateTime.UtcNow, targetDate = DateTime.UtcNow.AddDays(30) }
             };
 
             _context.Users.Add(user);
@@ -275,7 +275,7 @@ namespace CareerTrack.Tests.IntegrationTests.Repository
             _context.SaveChanges();
 
             // Act
-            var result = _repository.GetByUserId(user.Id);
+            var result = _repository.GetByUserId(user.Id.Value);
 
             // Assert
             result.Should().HaveCount(3);
@@ -290,12 +290,12 @@ namespace CareerTrack.Tests.IntegrationTests.Repository
             var user2 = new User { Id = 2, UserName = "User 2", FirstName = "User 2", LastName = "User", Email = "test@example.com", PasswordHash = "hash", PasswordSalt = "salt" };
             var goalsUser1 = new List<Goal>
             {
-                new Goal { Name = "User 1 Goal 1", UserId = user1.Id, startDate = DateTime.UtcNow, targetDate = DateTime.UtcNow.AddDays(10) },
-                new Goal { Name = "User 1 Goal 2", UserId = user1.Id, startDate = DateTime.UtcNow, targetDate = DateTime.UtcNow.AddDays(20) }
+                new Goal { Name = "User 1 Goal 1", UserId = user1.Id!.Value, startDate = DateTime.UtcNow, targetDate = DateTime.UtcNow.AddDays(10) },
+                new Goal { Name = "User 1 Goal 2", UserId = user1.Id.Value, startDate = DateTime.UtcNow, targetDate = DateTime.UtcNow.AddDays(20) }
             };
             var goalsUser2 = new List<Goal>
             {
-                new Goal { Name = "User 2 Goal 1", UserId = user2.Id, startDate = DateTime.UtcNow, targetDate = DateTime.UtcNow.AddDays(15) }
+                new Goal { Name = "User 2 Goal 1", UserId = user2.Id!.Value, startDate = DateTime.UtcNow, targetDate = DateTime.UtcNow.AddDays(15) }
             };
 
             _context.Users.AddRange(user1, user2);
@@ -304,7 +304,7 @@ namespace CareerTrack.Tests.IntegrationTests.Repository
             _context.SaveChanges();
 
             // Act
-            var result = _repository.GetByUserId(user1.Id);
+            var result = _repository.GetByUserId(user1.Id.Value);
 
             // Assert
             result.Should().HaveCount(2);
@@ -329,9 +329,9 @@ namespace CareerTrack.Tests.IntegrationTests.Repository
             var now = DateTime.UtcNow;
             var goals = new List<Goal>
             {
-                new Goal { Name = "Oldest", UserId = user.Id, startDate = now.AddDays(-30), targetDate = now.AddDays(-20) },
-                new Goal { Name = "Newest", UserId = user.Id, startDate = now.AddDays(-1), targetDate = now.AddDays(10) },
-                new Goal { Name = "Middle", UserId = user.Id, startDate = now.AddDays(-15), targetDate = now.AddDays(5) }
+                new Goal { Name = "Oldest", UserId = user.Id!.Value, startDate = now.AddDays(-30), targetDate = now.AddDays(-20) },
+                new Goal { Name = "Newest", UserId = user.Id.Value, startDate = now.AddDays(-1), targetDate = now.AddDays(10) },
+                new Goal { Name = "Middle", UserId = user.Id.Value, startDate = now.AddDays(-15), targetDate = now.AddDays(5) }
             };
 
             _context.Users.Add(user);
@@ -339,7 +339,7 @@ namespace CareerTrack.Tests.IntegrationTests.Repository
             _context.SaveChanges();
 
             // Act
-            var result = _repository.GetByUserId(user.Id).ToList();
+            var result = _repository.GetByUserId(user.Id.Value).ToList();
 
             // Assert
             result.Should().HaveCount(3);
@@ -356,7 +356,7 @@ namespace CareerTrack.Tests.IntegrationTests.Repository
             var goal = new Goal
             {
                 Name = "Test Goal",
-                UserId = user.Id,
+                UserId = user.Id!.Value,
                 startDate = DateTime.UtcNow,
                 targetDate = DateTime.UtcNow.AddDays(30)
             };
@@ -366,7 +366,7 @@ namespace CareerTrack.Tests.IntegrationTests.Repository
             _context.SaveChanges();
 
             // Act
-            var result = _repository.GetByUserId(user.Id).ToList();
+            var result = _repository.GetByUserId(user.Id.Value).ToList();
 
             // Assert
             result.Should().HaveCount(1);
@@ -511,7 +511,7 @@ namespace CareerTrack.Tests.IntegrationTests.Repository
                 Description = "Testing full lifecycle",
                 startDate = DateTime.UtcNow,
                 targetDate = DateTime.UtcNow.AddDays(30),
-                UserId = user.Id
+                UserId = user.Id!.Value
             };
 
             var created = _repository.Create(goal);
@@ -548,13 +548,13 @@ namespace CareerTrack.Tests.IntegrationTests.Repository
 
             var user1Goals = new List<Goal>
             {
-                new Goal { Name = "User 1 Goal 1", UserId = user1.Id, startDate = DateTime.UtcNow, targetDate = DateTime.UtcNow.AddDays(10) },
-                new Goal { Name = "User 1 Goal 2", UserId = user1.Id, startDate = DateTime.UtcNow, targetDate = DateTime.UtcNow.AddDays(20) }
+                new Goal { Name = "User 1 Goal 1", UserId = user1.Id!.Value, startDate = DateTime.UtcNow, targetDate = DateTime.UtcNow.AddDays(10) },
+                new Goal { Name = "User 1 Goal 2", UserId = user1.Id.Value, startDate = DateTime.UtcNow, targetDate = DateTime.UtcNow.AddDays(20) }
             };
 
             var user2Goals = new List<Goal>
             {
-                new Goal { Name = "User 2 Goal 1", UserId = user2.Id, startDate = DateTime.UtcNow, targetDate = DateTime.UtcNow.AddDays(15) }
+                new Goal { Name = "User 2 Goal 1", UserId = user2.Id!.Value, startDate = DateTime.UtcNow, targetDate = DateTime.UtcNow.AddDays(15) }
             };
 
             _context.Goals.AddRange(user1Goals);
@@ -562,8 +562,8 @@ namespace CareerTrack.Tests.IntegrationTests.Repository
             _context.SaveChanges();
 
             // Act
-            var user1Retrieved = _repository.GetByUserId(user1.Id).ToList();
-            var user2Retrieved = _repository.GetByUserId(user2.Id).ToList();
+            var user1Retrieved = _repository.GetByUserId(user1.Id.Value).ToList();
+            var user2Retrieved = _repository.GetByUserId(user2.Id.Value).ToList();
 
             // Assert
             user1Retrieved.Should().HaveCount(2);
@@ -573,7 +573,7 @@ namespace CareerTrack.Tests.IntegrationTests.Repository
             user2Retrieved.Should().OnlyContain(g => g.UserId == user2.Id);
 
             // Verify cross-user access returns null
-            var crossAccess = _repository.GetByIdAndUser(user1Goals[0].Id, user2.Id);
+            var crossAccess = _repository.GetByIdAndUser(user1Goals[0].Id, user2.Id.Value);
             crossAccess.Should().BeNull();
         }
 
