@@ -1,11 +1,6 @@
 ﻿using CareerTrack.Models;
 using CareerTrack.Security;
 using FluentAssertions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CareerTrack.Tests.UnitTests.Security
 {
@@ -14,30 +9,51 @@ namespace CareerTrack.Tests.UnitTests.Security
         [Fact]
         public void ResolveRole_ShouldReturnUser_WhenIsAdminIsFalse()
         {
-            //Arrange
-            DefaultRoleResolver resolver = new DefaultRoleResolver();
+            // Arrange
+            var resolver = new DefaultRoleResolver();
+            var user = new User { IsAdmin = false };
 
-            User user = new User { IsAdmin = false };
-
-            //Act 
+            // Act
             string role = resolver.ResolveRole(user);
 
-            //Assert
+            // Assert
             role.Should().Be("User");
         }
 
         [Fact]
-        public void ResolveRole_ShouldReturnAdmin_WhenIsAdminIsTrue()
+        public void ResolveRole_ShouldReturnUser_WhenIsAdminIsNull()
         {
-            //Arrange
-            DefaultRoleResolver resolver = new DefaultRoleResolver();
+            // Arrange
+            var resolver = new DefaultRoleResolver();
+            var user = new User { IsAdmin = null };
 
-            User user = new User { IsAdmin = true };
-
-            //Act
+            // Act
             string role = resolver.ResolveRole(user);
 
-            //Assert
+            // Assert
+            role.Should().Be("User");
+        }
+
+        [Fact]
+        public void ResolveRole_ShouldHandleUserWithAllProperties()
+        {
+            // Arrange
+            var resolver = new DefaultRoleResolver();
+            var user = new User
+            {
+                IsAdmin = true,
+                UserName = "testuser",
+                Email = "test@example.com",
+                FirstName = "Test",
+                LastName = "User",
+                PasswordHash = "hash",
+                PasswordSalt = "salt"
+            };
+
+            // Act
+            string role = resolver.ResolveRole(user);
+
+            // Assert
             role.Should().Be("Admin");
         }
     }
