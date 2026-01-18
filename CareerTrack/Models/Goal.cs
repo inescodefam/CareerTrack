@@ -72,7 +72,7 @@ namespace CareerTrack.Models
 
     public class SkillGoal : Goal
     {
-        public string SkillCategory { get; set; }
+        public string? SkillCategory { get; set; }
         public int ProficiencyLevel { get; set; }
     }
 
@@ -81,15 +81,15 @@ namespace CareerTrack.Models
     public class GoalHandlerResult
     {
         public bool Success { get; set; }
-        public string Message { get; set; }
+        public string? Message { get; set; }
         public List<string> Errors { get; set; } = new();
     }
 
     public class GoalRequest
     {
-        public Goal Goal { get; set; }
+        public Goal? Goal { get; set; }
         public int UserId { get; set; }
-        public string Action { get; set; }
+        public string? Action { get; set; }
     }
 
 }
