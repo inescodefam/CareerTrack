@@ -4,9 +4,9 @@ namespace CareerTrack.Decorators
 {
     public abstract class GoalDecorator : IGoalNotification
     {
-        private IGoalNotification _goalDecorator;
+        private readonly IGoalNotification _goalDecorator;
 
-        public GoalDecorator(IGoalNotification goalDecorator)
+        protected GoalDecorator(IGoalNotification goalDecorator)
         {
             _goalDecorator = goalDecorator;
         }
