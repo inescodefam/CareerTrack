@@ -45,6 +45,8 @@ namespace CareerTrack.Services
             var progress = GetProgress(goalId, userId);
             if (progress == null)
                 throw new InvalidOperationException("Progress record not found");
+            if (progress.progressData == null)
+                throw new InvalidOperationException("Progress data not found");
 
             var oldPercentage = progress.progressData.ProgressPercentage;
 
@@ -81,8 +83,8 @@ namespace CareerTrack.Services
         public IEnumerable<GoalProgress> GetProgressHistory(int goalId, int userId)
         {
             return _context.GoalProgress
-                .Where(pu => pu.GoalId == goalId && pu.UserId == userId)
-                .OrderByDescending(pu => pu.progressData.LastUpdated)
+                .Where(pu => pu.GoalId == goalId && pu.UserId == userId && pu.progressData != null)
+                .OrderByDescending(pu => pu.progressData!.LastUpdated)
                 .ToList();
         }
     }
