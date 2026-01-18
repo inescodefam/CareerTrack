@@ -15,7 +15,7 @@ namespace CareerTrack.Handlers
         {
             var result = new GoalHandlerResult();
 
-            if (request.Action == "Delete" || request.Action == "Update")
+            if (request.Goal != null && (request.Action == "Delete" || request.Action == "Update"))
             {
                 var existingGoal = _context.Goals.Find(request.Goal.Id);
 
