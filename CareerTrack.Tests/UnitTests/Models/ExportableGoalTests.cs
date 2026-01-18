@@ -1,12 +1,12 @@
 using CareerTrack.Models;
 using CareerTrack.Services.ExporterData;
 using FluentAssertions;
-using Xunit;
 
 namespace CareerTrack.Tests.UnitTests.Models
 {
     public class ExportableGoalTests
     {
+
         [Fact]
         public void ExportableGoal_ShouldWrapGoalCorrectly()
         {
@@ -16,8 +16,8 @@ namespace CareerTrack.Tests.UnitTests.Models
                 Id = 1,
                 Name = "Test Goal",
                 Description = "Test Description",
-                startDate = new DateTime(2024, 1, 1),
-                targetDate = new DateTime(2024, 12, 31),
+                startDate = new DateTime(2024, 1, 1, 2, 2, 2, DateTimeKind.Utc),
+                targetDate = new DateTime(2024, 12, 31, 2, 2, 2, DateTimeKind.Utc),
                 UserId = 1
             };
 
@@ -51,7 +51,7 @@ namespace CareerTrack.Tests.UnitTests.Models
         public void ExportableGoal_GetGoalStartDate_ShouldReturnFormattedDate()
         {
             // Arrange
-            var startDate = new DateTime(2024, 6, 15, 10, 30, 0);
+            var startDate = new DateTime(2024, 6, 15, 10, 30, 0, DateTimeKind.Utc);
             var goal = new Goal
             {
                 Name = "Test",
@@ -73,7 +73,7 @@ namespace CareerTrack.Tests.UnitTests.Models
         public void ExportableGoal_GetGoalTargetDate_ShouldReturnFormattedDate()
         {
             // Arrange
-            var targetDate = new DateTime(2024, 12, 25, 15, 45, 0);
+            var targetDate = new DateTime(2024, 12, 25, 15, 45, 0, DateTimeKind.Utc);
             var goal = new Goal
             {
                 Name = "Test",
@@ -116,14 +116,14 @@ namespace CareerTrack.Tests.UnitTests.Models
             var goal1 = new Goal
             {
                 Name = "Goal One",
-                startDate = new DateTime(2024, 1, 1),
-                targetDate = new DateTime(2024, 6, 30)
+                startDate = new DateTime(2024, 1, 1, 2, 2, 2, DateTimeKind.Utc),
+                targetDate = new DateTime(2024, 6, 30, 2, 2, 2, DateTimeKind.Utc)
             };
             var goal2 = new Goal
             {
                 Name = "Goal Two",
-                startDate = new DateTime(2024, 7, 1),
-                targetDate = new DateTime(2024, 12, 31)
+                startDate = new DateTime(2024, 7, 1, 2, 2, 2, DateTimeKind.Utc),
+                targetDate = new DateTime(2024, 12, 31, 2, 2, 2, DateTimeKind.Utc)
             };
 
             var exportable1 = new ExportableGoal(goal1);
