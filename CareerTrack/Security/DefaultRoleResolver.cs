@@ -6,7 +6,7 @@ namespace CareerTrack.Security
     {
         public string ResolveRole(User user)
         {
-            return user.IsAdmin ? "Admin" : "User";
+            return (user.IsAdmin ?? false) ? "Admin" : "User";
         }
     }
 }

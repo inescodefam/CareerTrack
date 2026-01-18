@@ -28,10 +28,10 @@ namespace CareerTrack.Controllers
         [HttpPost]
         public IActionResult Login(UserLoginVM sentUserToLogin)
         {
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
                 return View(sentUserToLogin);
 
-                string genericLoginError = "Incorrect username or password";
+            string genericLoginError = "Incorrect username or password";
 
 
             if (sentUserToLogin == null || string.IsNullOrWhiteSpace(sentUserToLogin.Username) ||
@@ -61,7 +61,7 @@ namespace CareerTrack.Controllers
                 return View(sentUserToLogin);
             }
 
-            string role = existingUser.IsAdmin ? "Admin" : "User";
+            string role = existingUser.IsAdmin ?? false ? "Admin" : "User";
 
 
             var claims = new List<Claim>()
@@ -90,9 +90,9 @@ namespace CareerTrack.Controllers
 
             if (sentUserToLogin.ReturnUrl != null)
                 return LocalRedirect(sentUserToLogin.ReturnUrl);
-            else if (existingUser.IsAdmin)
+            else if (existingUser.IsAdmin ?? false)
                 return RedirectToAction("Index", "Goals");
-            else if (!existingUser.IsAdmin)
+            else if (!existingUser.IsAdmin ?? false)
                 return RedirectToAction("Index", "Goals");
             else
                 return View();

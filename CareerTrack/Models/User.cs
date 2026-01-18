@@ -38,7 +38,7 @@ namespace CareerTrack.Models
         public string? Phone { get; set; }
 
         [JsonRequired]
-        public bool IsAdmin { get; set; } = false;
+        public bool? IsAdmin { get; set; } = false;
     }
 
     // interface segregation principle

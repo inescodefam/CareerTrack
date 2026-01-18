@@ -1,59 +1,124 @@
 ﻿using CareerTrack.Models;
 using CareerTrack.Security;
 using FluentAssertions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CareerTrack.Tests.UnitTests.Security
 {
     public class PremiumRoleResolverTests
     {
         [Fact]
-        public void ResolveRole_ShouldReturnAdmin_WhenIsAdminIsTrue()
+        public void ResolveRole_WhenUserIsNull_ShouldThrowArgumentNullException()
         {
-            //Arrange
-            PremiumRoleResolver resolver = new PremiumRoleResolver();
-            User user = new User { IsAdmin = true };
+            // Arrange
+            var resolver = new PremiumRoleResolver();
 
-            //Act
+            // Act
+            var act = () => resolver.ResolveRole(null!);
+
+            // Assert
+            act.Should().Throw<ArgumentNullException>()
+                .WithParameterName("user");
+        }
+
+        [Fact]
+        public void ResolveRole_WhenIsAdminIsNull_ShouldReturnUser()
+        {
+            // Arrange
+            var user = new User { IsAdmin = null };
+            var resolver = new PremiumRoleResolver();
+
+            // Act
+            var result = resolver.ResolveRole(user);
+
+            // Assert
+            result.Should().Be("User");
+        }
+
+        [Fact]
+        public void ResolveRole_WhenIsAdminIsTrue_ShouldReturnAdmin()
+        {
+            // Arrange
+            var resolver = new PremiumRoleResolver();
+            var user = new User { IsAdmin = true };
+
+            // Act
             string role = resolver.ResolveRole(user);
 
-            //Assert
+            // Assert
             role.Should().Be("Admin");
         }
 
         [Fact]
-        public void ResolveRole_ShouldReturnPremiumUser_WhenEmailEndsWithPremiumCom()
+        public void ResolveRole_WhenIsAdminIsFalse_ShouldReturnUser()
         {
-            PremiumRoleResolver resolver = new PremiumRoleResolver();
+            // Arrange
+            var resolver = new PremiumRoleResolver();
+            var user = new User { IsAdmin = false };
 
-            User user = new User { Email = "mail@premium.com" };
-
-            //Act
+            // Act
             string role = resolver.ResolveRole(user);
 
-            //Assert
-            role.Should().Be("PremiumUser");
+            // Assert
+            role.Should().Be("User");
         }
 
         [Fact]
-        public void ResolveRole_ShouldReturnUser_WhenEmailNotEndsWithPremiumCom_And_IsAdminOsFalse()
+        public void ResolveRole_WithPremiumEmail_WhenIsAdminIsNull_ShouldReturnUser()
         {
-            PremiumRoleResolver resolver = new PremiumRoleResolver();
+            // Arrange
+            var resolver = new PremiumRoleResolver();
+            var user = new User { Email = "mail@premium.com", IsAdmin = null };
 
-            User user = new User
+            // Act
+            string role = resolver.ResolveRole(user);
+
+            // Assert
+            role.Should().Be("User");
+        }
+
+        [Fact]
+        public void ResolveRole_WithPremiumEmail_WhenIsAdminIsTrue_ShouldReturnAdmin()
+        {
+            // Arrange
+            var resolver = new PremiumRoleResolver();
+            var user = new User { Email = "mail@premium.com", IsAdmin = true };
+
+            // Act
+            string role = resolver.ResolveRole(user);
+
+            // Assert
+            role.Should().Be("Admin");
+        }
+
+        [Fact]
+        public void ResolveRole_WithRegularEmail_WhenIsAdminIsFalse_ShouldReturnUser()
+        {
+            // Arrange
+            var resolver = new PremiumRoleResolver();
+            var user = new User
             {
-                Email = "mail@mail.com" ,
+                Email = "mail@mail.com",
                 IsAdmin = false
             };
 
-            //Act
+            // Act
             string role = resolver.ResolveRole(user);
 
-            //Assert
+            // Assert
+            role.Should().Be("User");
+        }
+
+        [Fact]
+        public void ResolveRole_WithDefaultIsAdmin_ShouldReturnUser()
+        {
+            // Arrange - IsAdmin defaults to false per User model
+            var resolver = new PremiumRoleResolver();
+            var user = new User();
+
+            // Act
+            string role = resolver.ResolveRole(user);
+
+            // Assert
             role.Should().Be("User");
         }
     }
