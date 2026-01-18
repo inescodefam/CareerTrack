@@ -992,6 +992,117 @@ namespace CareerTrack.Tests.UnitTests.Controllers
             result.Should().BeAssignableTo<IActionResult>();
         }
 
+        [Fact]
+        public void ValidGoalDeleteDelete_WithNullId_ShouldReturnNotFound()
+        {
+            // Act
+            var result = _controller.ValidGoalDeleteDelete(null);
+
+            // Assert
+            result.Should().BeOfType<NotFoundResult>();
+        }
+
+        [Fact]
+        public void ValidGoalDeleteDelete_WithNonExistentGoal_ShouldReturnNotFound()
+        {
+            // Arrange
+            var goalId = 999;
+            var userId = 1;
+
+            _mockGoalService.Setup(s => s.GetGoalById(goalId, userId)).Returns((Goal?)null);
+
+            // Act
+            var result = _controller.ValidGoalDeleteDelete(goalId);
+
+            // Assert
+            result.Should().BeOfType<NotFoundResult>();
+        }
+
+        #endregion
+
+        #region Edit POST Null Id Tests
+
+        [Fact]
+        public void Edit_POST_WithNullId_ShouldReturnNotFound()
+        {
+            // Arrange
+            var goal = new Goal
+            {
+                Id = 1,
+                Name = "Test Goal",
+                startDate = DateTime.UtcNow,
+                targetDate = DateTime.UtcNow.AddDays(30)
+            };
+
+            // Act
+            var result = _controller.Edit(null, goal);
+
+            // Assert
+            result.Should().BeOfType<NotFoundResult>();
+        }
+
+        #endregion
+
+        #region DeleteConfirmed Null Id Tests
+
+        [Fact]
+        public void DeleteConfirmed_WithNullId_ShouldReturnNotFound()
+        {
+            // Act
+            var result = _controller.DeleteConfirmed(null);
+
+            // Assert
+            result.Should().BeOfType<NotFoundResult>();
+        }
+
+        #endregion
+
+        #region UpdateProgress Null Parameters Tests
+
+        [Fact]
+        public void UpdateProgress_WithNullId_ShouldReturnNotFound()
+        {
+            // Act
+            var result = _controller.UpdateProgress(null, 50, "notes");
+
+            // Assert
+            result.Should().BeOfType<NotFoundResult>();
+        }
+
+        [Fact]
+        public void UpdateProgress_WithNullProgressPercentage_ShouldReturnNotFound()
+        {
+            // Act
+            var result = _controller.UpdateProgress(1, null, "notes");
+
+            // Assert
+            result.Should().BeOfType<NotFoundResult>();
+        }
+
+        [Fact]
+        public void UpdateProgress_WithBothNullParameters_ShouldReturnNotFound()
+        {
+            // Act
+            var result = _controller.UpdateProgress(null, null, "notes");
+
+            // Assert
+            result.Should().BeOfType<NotFoundResult>();
+        }
+
+        #endregion
+
+        #region Print Null Id Tests
+
+        [Fact]
+        public void Print_WithNullId_ShouldReturnNotFound()
+        {
+            // Act
+            var result = _controller.Print(null, "PDF");
+
+            // Assert
+            result.Should().BeOfType<NotFoundResult>();
+        }
+
         #endregion
 
     }
