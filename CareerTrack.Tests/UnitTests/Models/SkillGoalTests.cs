@@ -1,6 +1,5 @@
 using CareerTrack.Models;
 using FluentAssertions;
-using Xunit;
 
 namespace CareerTrack.Tests.UnitTests.Models
 {
@@ -61,8 +60,8 @@ namespace CareerTrack.Tests.UnitTests.Models
                 Description = "Learn Python for data science",
                 SkillCategory = "Data Science",
                 ProficiencyLevel = 4,
-                startDate = new DateTime(2024, 1, 1),
-                targetDate = new DateTime(2024, 6, 30),
+                startDate = new DateTime(2024, 1, 1, 2, 2, 2, DateTimeKind.Utc),
+                targetDate = new DateTime(2024, 6, 30, 2, 2, 2, DateTimeKind.Utc),
                 UserId = 10
             };
 
@@ -102,7 +101,7 @@ namespace CareerTrack.Tests.UnitTests.Models
         public void SkillGoal_CanBeCreatedWithEndDate()
         {
             // Arrange & Act
-            var endDate = new DateTime(2024, 12, 31);
+            var endDate = new DateTime(2024, 12, 31, 2, 2, 2, DateTimeKind.Utc);
             var skillGoal = new SkillGoal
             {
                 Name = "Complete Certification",

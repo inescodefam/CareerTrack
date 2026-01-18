@@ -216,27 +216,6 @@ namespace CareerTrack.Tests.UnitTests.ViewModels
             Assert.Contains(validationResults, v => v.MemberNames.Contains("LastName"));
         }
 
-        //[Fact]
-        //public void UserRegisterVM_WithEmptyPhone_ShouldPassValidation()
-        //{
-        //    // Arrange
-        //    var model = new UserRegisterVM
-        //    {
-        //        Username = "testuser",
-        //        Password = "Password123!",
-        //        Email = "test@example.com",
-        //        FirstName = "John",
-        //        LastName = "Doe",
-        //        Phone = "" // Phone is not optional
-        //    };
-
-        //    // Act
-        //    var validationResults = ValidateModel(model);
-
-        //    // Assert
-        //    Assert.Empty(validationResults);
-        //}
-
         [Fact]
         public void UserRegisterVM_WithInvalidPhone_ShouldFailValidation()
         {
@@ -258,29 +237,6 @@ namespace CareerTrack.Tests.UnitTests.ViewModels
             Assert.NotEmpty(validationResults);
             Assert.Contains(validationResults, v => v.MemberNames.Contains("Phone"));
         }
-
-        //[Theory]
-        //[InlineData("test@example.com")]
-        //[InlineData("user.name@domain.co.uk")]
-        //[InlineData("test+tag@example.com")]
-        //public void UserRegisterVM_WithValidEmails_ShouldPassValidation(string email)
-        //{
-        //    // Arrange
-        //    var model = new UserRegisterVM
-        //    {
-        //        Username = "testuser",
-        //        Password = "Password123!",
-        //        Email = email,
-        //        FirstName = "John",
-        //        LastName = "Doe"
-        //    };
-
-        //    // Act
-        //    var validationResults = ValidateModel(model);
-
-        //    // Assert
-        //    Assert.Empty(validationResults);
-        //}
 
         private static IList<ValidationResult> ValidateModel(object model)
         {
