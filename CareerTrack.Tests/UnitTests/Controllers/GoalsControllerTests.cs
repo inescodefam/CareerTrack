@@ -1,5 +1,4 @@
 using CareerTrack.Controllers;
-using CareerTrack.Interfaces;
 using CareerTrack.Models;
 using CareerTrack.Services;
 using FluentAssertions;
@@ -8,7 +7,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.EntityFrameworkCore;
 using Moq;
-using Xunit;
 
 namespace CareerTrack.Tests.UnitTests.Controllers
 {
@@ -21,6 +19,27 @@ namespace CareerTrack.Tests.UnitTests.Controllers
         private readonly Mock<CareerTrack.Interfaces.IGoalFactory> _mockGoalFactory;
         private readonly AppDbContext _context;
         private readonly GoalsController _controller;
+
+        private bool _disposed;
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!_disposed)
+            {
+                if (disposing)
+                {
+                    _context.Database.EnsureDeleted();
+                    _context.Dispose();
+                }
+                _disposed = true;
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
 
         public GoalsControllerTests()
         {
@@ -50,12 +69,6 @@ namespace CareerTrack.Tests.UnitTests.Controllers
             var httpContext = new DefaultHttpContext();
             var tempData = new TempDataDictionary(httpContext, Mock.Of<ITempDataProvider>());
             _controller.TempData = tempData;
-        }
-
-        public void Dispose()
-        {
-            _context.Database.EnsureDeleted();
-            _context.Dispose();
         }
 
         #region Index Tests
@@ -673,124 +686,6 @@ namespace CareerTrack.Tests.UnitTests.Controllers
 
         #endregion
 
-        // Note: CreateValidGoal and ValidGoalDeleteDelete are not unit tested here because they delegate entirely to the handler chain which is already comprehensively tested in GoalHandlerTests.cs
 
-        //#region CreateValidGoal Tests
-
-        //        [Fact]
-        //        public void CreateValidGoal_WithValidGoal_ShouldRedirectToIndex()
-        //        {
-        //            // Arrange
-        //            var userId = 1;
-        //            var user = new User
-        //            {
-        //                Id = userId,
-        //                UserName = "testuser",
-        //                FirstName = "Test",
-        //                LastName = "User",
-        //                Email = "test@example.com",
-        //                PasswordHash = "hash",
-        //                PasswordSalt = "salt"
-        //            };
-        //            _context.Users.Add(user);
-        //            _context.SaveChanges();
-
-        //            var goal = new Goal
-        //            {
-        //                Name = "Test Goal",
-        //                Description = "Test Description",
-        //                UserId = userId,
-        //                startDate = DateTime.UtcNow,
-        //                targetDate = DateTime.UtcNow.AddDays(30)
-        //            };
-
-        //            // Act
-        //            var result = _controller.CreateValidGoal(goal);
-
-        //            // Assert
-        //            var redirectResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
-        //            redirectResult.ActionName.Should().Be("Index");
-        //            _controller.TempData["Success"].Should().NotBeNull();
-        //        }
-
-        //        [Fact]
-        //        public void CreateValidGoal_WithInvalidGoal_ShouldReturnViewWithErrors()
-        //        {
-        //            // Arrange
-        //            var goal = new Goal
-        //            {
-        //                Name = "", // Invalid: empty name
-        //                startDate = DateTime.UtcNow,
-        //                targetDate = DateTime.UtcNow.AddDays(30)
-        //            };
-
-        //            // Act
-        //            var result = _controller.CreateValidGoal(goal);
-
-        //            // Assert
-        //            var viewResult = result.Should().BeOfType<ViewResult>().Subject;
-        //            viewResult.Model.Should().Be(goal);
-        //            _controller.ModelState.Should().ContainKey("");
-        //        }
-
-        //        #endregion
-
-        //        #region ValidGoalDeleteDelete Tests
-
-        //        [Fact]
-        //        public void ValidGoalDeleteDelete_WithValidGoal_ShouldRedirectToIndex()
-        //        {
-        //            // Arrange
-        //            var goalId = 1;
-        //            var userId = 1;
-        //            var user = new User
-        //            {
-        //                Id = userId,
-        //                UserName = "testuser",
-        //                FirstName = "Test",
-        //                LastName = "User",
-        //                Email = "test@example.com",
-        //                PasswordHash = "hash",
-        //                PasswordSalt = "salt"
-        //            };
-        //            var goal = new Goal
-        //            {
-        //                Id = goalId,
-        //                Name = "Test Goal",
-        //                UserId = userId,
-        //                startDate = DateTime.UtcNow,
-        //                targetDate = DateTime.UtcNow.AddDays(30)
-        //            };
-        //            _context.Users.Add(user);
-        //            _context.Goals.Add(goal);
-        //            _context.SaveChanges();
-
-        //            _mockGoalService.Setup(s => s.GetGoalById(goalId, userId)).Returns(goal);
-
-        //            // Act
-        //            var result = _controller.ValidGoalDeleteDelete(goalId);
-
-        //            // Assert
-        //            var redirectResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
-        //            redirectResult.ActionName.Should().Be("Index");
-        //            _controller.TempData["Success"].Should().NotBeNull();
-        //        }
-
-        //        [Fact]
-        //        public void ValidGoalDeleteDelete_WithInvalidGoal_ShouldSetErrorMessage()
-        //        {
-        //            // Arrange
-        //            var goalId = 999;
-        //            var userId = 1;
-
-        //            _mockGoalService.Setup(s => s.GetGoalById(goalId, userId)).Returns((Goal)null!);
-
-        //            // Act
-        //            var result = _controller.ValidGoalDeleteDelete(goalId);
-
-        //            // Assert
-        //            var redirectResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
-        //            redirectResult.ActionName.Should().Be("Index");
-        //        }
     }
 }
