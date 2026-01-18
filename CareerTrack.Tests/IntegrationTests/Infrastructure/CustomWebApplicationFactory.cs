@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using CareerTrack.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;

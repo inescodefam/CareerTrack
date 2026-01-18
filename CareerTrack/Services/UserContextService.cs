@@ -1,4 +1,5 @@
-﻿
+﻿using CareerTrack.Models;
+
 // SINGLE RESPONSIBILITY PRINCIPLE
 
 namespace CareerTrack.Services

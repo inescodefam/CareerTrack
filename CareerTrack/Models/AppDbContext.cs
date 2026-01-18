@@ -1,14 +1,16 @@
-﻿using CareerTrack.Models;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 
-public class AppDbContext : DbContext
+namespace CareerTrack.Models
 {
-    public AppDbContext(DbContextOptions<AppDbContext> options)
-        : base(options)
+    public class AppDbContext : DbContext
     {
-    }
+        public AppDbContext(DbContextOptions<AppDbContext> options)
+            : base(options)
+        {
+        }
 
-    public DbSet<Goal> Goals { get; set; }
-    public DbSet<User> Users { get; set; }
-    public DbSet<GoalProgress> GoalProgress { get; set; }
+        public DbSet<Goal> Goals { get; set; }
+        public DbSet<User> Users { get; set; }
+        public DbSet<GoalProgress> GoalProgress { get; set; }
+    }
 }
