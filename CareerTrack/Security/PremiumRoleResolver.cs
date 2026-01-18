@@ -6,13 +6,10 @@ namespace CareerTrack.Security
     {
         public string ResolveRole(User user)
         {
-            if (user.IsAdmin ?? false)
-                return "Admin";
+            if (user == null)
+                throw new ArgumentNullException(nameof(user));
 
-            if (user.Email.EndsWith("@premium.com"))
-                return "PremiumUser";
-
-            return "User";
+            return (user.IsAdmin ?? false) ? "Admin" : "User";
         }
     }
 }
