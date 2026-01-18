@@ -9,7 +9,6 @@ namespace CareerTrack.Services
         string FormatName { get; }
         string ContentType { get; }
 
-        // byte[] Export(ExportData data);
         byte[] Export(IExportUserData userData, IExportGoalData goalData);
 
     }
