@@ -242,13 +242,13 @@ jobs:
             /k:"${{ vars.SONAR_PROJECT_KEY }}" \
             /o:"${{ vars.SONAR_ORGANIZATION }}" \
             /d:sonar.host.url="${{ vars.SONAR_HOST_URL }}" \
-            /d:sonar.token="SONAR_TOKEN"
+            /d:sonar.token="$SONAR_TOKEN"
 
       - name: Build
         run: dotnet build --no-restore --configuration Release
 
       - name: End SonarQube analysis
-        run: dotnet sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
+        run: dotnet sonarscanner end /d:sonar.token="$SONAR_TOKEN"
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
