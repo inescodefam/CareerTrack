@@ -1,12 +1,13 @@
 ﻿using CareerTrack.Interfaces;
 using CareerTrack.Services.ExporterData;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System.ComponentModel.DataAnnotations;
 
 namespace CareerTrack.Models
 {
     public class Goal
     {
-        [Required]
+        [BindRequired]
         public int Id { get; set; }
 
         [Required, MaxLength(100)]
@@ -15,15 +16,15 @@ namespace CareerTrack.Models
         [MaxLength(500)]
         public string? Description { get; set; }
 
-        [Required]
+        [Required, BindRequired]
         public DateTime targetDate { get; set; }
 
-        [Required]
+        [Required, BindRequired]
         public DateTime startDate { get; set; }
 
         public DateTime? endDate { get; set; }
 
-        [Required]
+        [Required, BindRequired]
         public int UserId { get; set; }
 
         public User? User { get; set; }
