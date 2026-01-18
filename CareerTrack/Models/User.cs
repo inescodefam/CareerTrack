@@ -33,11 +33,11 @@ namespace CareerTrack.Models
         [StringLength(50)]
         public string LastName { get; set; } = null!;
 
-        [JsonRequired]
         [Phone]
         [StringLength(20)]
         public string? Phone { get; set; }
 
+        [JsonRequired]
         public bool IsAdmin { get; set; } = false;
     }
 
