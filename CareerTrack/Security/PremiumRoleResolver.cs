@@ -6,7 +6,7 @@ namespace CareerTrack.Security
     {
         public string ResolveRole(User user)
         {
-            if (user.IsAdmin)
+            if (user.IsAdmin ?? false)
                 return "Admin";
 
             if (user.Email.EndsWith("@premium.com"))
