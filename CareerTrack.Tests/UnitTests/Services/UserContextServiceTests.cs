@@ -1,13 +1,10 @@
-﻿using System;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using CareerTrack.Models;
+﻿using CareerTrack.Models;
 using CareerTrack.Services;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Moq;
-using Xunit;
+using System.Security.Claims;
 
 namespace CareerTrack.Tests.UnitTests.Services
 {
@@ -22,7 +19,7 @@ namespace CareerTrack.Tests.UnitTests.Services
             return new AppDbContext(options);
         }
 
-        private static IHttpContextAccessor CreateHttpContextAccessorWithUser(string? username)
+        private static Microsoft.AspNetCore.Http.HttpContextAccessor CreateHttpContextAccessorWithUser(string? username)
         {
             var httpContext = new DefaultHttpContext();
 
