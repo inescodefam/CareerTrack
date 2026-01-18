@@ -2,7 +2,6 @@ using CareerTrack.Handlers;
 using CareerTrack.Models;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
-using Xunit;
 
 namespace CareerTrack.Tests.UnitTests.Handlers
 {
@@ -10,6 +9,7 @@ namespace CareerTrack.Tests.UnitTests.Handlers
     {
         private readonly AppDbContext _context;
         private readonly GoalAuthorizationHandler _handler;
+        private bool _disposed;
 
         public GoalAuthorizationHandlerTests()
         {
@@ -23,8 +23,21 @@ namespace CareerTrack.Tests.UnitTests.Handlers
 
         public void Dispose()
         {
-            _context.Database.EnsureDeleted();
-            _context.Dispose();
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!_disposed)
+            {
+                if (disposing)
+                {
+                    _context.Database.EnsureDeleted();
+                    _context.Dispose();
+                }
+                _disposed = true;
+            }
         }
 
         #region Authorization Success Tests

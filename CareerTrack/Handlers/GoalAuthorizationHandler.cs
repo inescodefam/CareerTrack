@@ -19,7 +19,7 @@ namespace CareerTrack.Handlers
             {
                 var existingGoal = _context.Goals.Find(request.Goal.Id);
 
-                if (existingGoal.UserId != request.UserId)
+                if (existingGoal?.UserId != request.UserId)
                 {
                     result.Success = false;
                     result.Message = "You are not authorized to modify this goal";
