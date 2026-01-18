@@ -12,6 +12,8 @@ namespace CareerTrack.Tests.UnitTests.Controllers
 {
     public class GoalsControllerTests : IDisposable
     {
+        private static readonly string[] AvailableExportFormats = ["PDF", "EXCEL"];
+
         private readonly Mock<IGoalService> _mockGoalService;
         private readonly Mock<IUserContextService> _mockUserContext;
         private readonly Mock<IProgressService> _mockProgressService;
@@ -809,7 +811,7 @@ namespace CareerTrack.Tests.UnitTests.Controllers
             var fileBytes = new byte[] { 1, 2, 3 };
 
             _mockExportService.Setup(s => s.ExportGoal(goalId, userId, format)).Returns(fileBytes);
-            _mockExportService.Setup(s => s.GetAvailableFormats()).Returns(new[] { "PDF", "EXCEL" });
+            _mockExportService.Setup(s => s.GetAvailableFormats()).Returns(AvailableExportFormats);
 
             // Act
             var result = _controller.Print(goalId, format);
@@ -829,7 +831,7 @@ namespace CareerTrack.Tests.UnitTests.Controllers
             var fileBytes = new byte[] { 1, 2, 3 };
 
             _mockExportService.Setup(s => s.ExportGoal(goalId, userId, format)).Returns(fileBytes);
-            _mockExportService.Setup(s => s.GetAvailableFormats()).Returns(new[] { "PDF", "EXCEL" });
+            _mockExportService.Setup(s => s.GetAvailableFormats()).Returns(AvailableExportFormats);
 
             // Act
             var result = _controller.Print(goalId, format);
@@ -894,7 +896,6 @@ namespace CareerTrack.Tests.UnitTests.Controllers
         public void CreateValidGoal_WithValidGoal_WhenHandlerFails_ShouldReturnViewWithErrors()
         {
             // Arrange
-            var userId = 1;
             var goal = new Goal
             {
                 Name = "Test Goal",

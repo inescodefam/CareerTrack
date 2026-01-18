@@ -6,8 +6,7 @@ namespace CareerTrack.Security
     {
         public string ResolveRole(User user)
         {
-            if (user == null)
-                throw new ArgumentNullException(nameof(user));
+            ArgumentNullException.ThrowIfNull(user);
 
             return (user.IsAdmin ?? false) ? "Admin" : "User";
         }
