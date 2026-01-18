@@ -54,10 +54,10 @@ namespace CareerTrack.Services
             await _cookie.SignOutAsync();
         }
 
-        public async Task<AuthResult> RegisterAsync(UserRegisterVM vm)
+        public async Task<AuthResult> RegisterAsync(UserRegisterVM userRegisterVM)
         {
-            var username = (vm.Username ?? "").Trim();
-            var email = (vm.Email ?? "").Trim();
+            var username = (userRegisterVM.Username ?? "").Trim();
+            var email = (userRegisterVM.Email ?? "").Trim();
 
             if (await _users.ExistsByUsernameAsync(username))
                 return new(false, $"Username {username} is already taken", null);
@@ -67,17 +67,17 @@ namespace CareerTrack.Services
 
 
             var salt = PasswordHashProvider.GetSalt();
-            var hash = PasswordHashProvider.GetHash(vm.Password, salt);
+            var hash = PasswordHashProvider.GetHash(userRegisterVM.Password, salt);
 
             var newUser = new User
             {
-                FirstName = vm.FirstName,
-                LastName = vm.LastName,
+                FirstName = userRegisterVM.FirstName,
+                LastName = userRegisterVM.LastName,
                 UserName = username,
                 Email = email,
                 PasswordSalt = salt,
                 PasswordHash = hash,
-                Phone = string.IsNullOrWhiteSpace(vm.Phone) ? null : vm.Phone.Trim(),
+                Phone = string.IsNullOrWhiteSpace(userRegisterVM.Phone) ? null : userRegisterVM.Phone.Trim(),
                 IsAdmin = false
             };
 
