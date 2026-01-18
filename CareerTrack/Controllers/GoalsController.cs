@@ -20,7 +20,7 @@ namespace CareerTrack.Controllers
         private readonly IUserContextService _userContext;
         private readonly IProgressService _progressService;
         private readonly IGoalExportService _exportService;
-        private readonly IGoalHandler _handlerChain;
+        private readonly GoalValidationHandler _handlerChain;
         private readonly IGoalFactory _goalFactory;
 
         public GoalsController(AppDbContext context,
@@ -235,20 +235,20 @@ namespace CareerTrack.Controllers
         [HttpGet]
         public IActionResult Notifications()
         {
-            IGoalNotification goalNotify = new GoalNotification("Learn Design Patterns");
+            GoalNotification goalNotify = new GoalNotification("Learn Design Patterns");
 
             ViewBag.Demo1 = goalNotify.GetDescription();
             goalNotify.SendReminder();
             goalNotify.StatusNotification();
 
-            IGoalNotification goalWithReminder = new ReminderDecorator(goalNotify);
+            ReminderDecorator goalWithReminder = new ReminderDecorator(goalNotify);
 
             ViewBag.Demo2 = goalWithReminder.GetDescription();
             goalWithReminder.SendReminder();
             goalWithReminder.StatusNotification();
 
 
-            IGoalNotification goalWithBoth = new NotificationDecorator(
+            NotificationDecorator goalWithBoth = new NotificationDecorator(
                 new ReminderDecorator(goalNotify)
             );
 
@@ -317,23 +317,30 @@ namespace CareerTrack.Controllers
                 return BadRequest(ModelState);
             var goal = _goalService.GetGoalById(id.Value, currentUser);
 
-            var request = new GoalRequest
+            if (goal != null)
             {
-                Goal = goal,
-                UserId = currentUser,
-                Action = "Delete"
-            };
+                var request = new GoalRequest
+                {
+                    Goal = goal,
+                    UserId = currentUser,
+                    Action = "Delete"
+                };
 
-            var result = _handlerChain.Handle(request);
+                var result = _handlerChain.Handle(request);
 
-            if (!result.Success)
-            {
-                TempData["Error"] = result.Message;
+                if (!result.Success)
+                {
+                    TempData["Error"] = result.Message;
+                    return RedirectToAction(ActionName);
+                }
+
+                TempData["Success"] = result.Message;
                 return RedirectToAction(ActionName);
             }
-
-            TempData["Success"] = result.Message;
-            return RedirectToAction(ActionName);
+            else
+            {
+                return NotFound();
+            }
         }
     }
 }
