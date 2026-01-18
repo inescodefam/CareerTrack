@@ -10,25 +10,11 @@
         public GoalProgressData progressData { get; set; }
         public string? Notes { get; set; }
 
-        // nikad ne smije baciti exception
-        //public abstract string getProgress();
-
         public abstract string GetProgressDescription();
 
     }
     public class GoalProgress : GoalProgressBase
     {
-        //public override string getProgress()
-        //{
-        //    if (progressData == null)
-        //        return "No progress yet.";
-
-        //    return $"Progress: {progressData.ProgressPercentage}%, " +
-        //    $"Last Updated: {progressData.LastUpdated}" +
-        //    $"Notes: {Notes}";
-
-        //}
-
         public override string GetProgressDescription()
         {
             if (progressData == null)
@@ -42,14 +28,6 @@
     {
         public int MilestonesCompleted { get; set; }
         public int TotalMilestones { get; set; }
-
-        //public override string getProgress()
-        //{
-        //    if (TotalMilestones == 0)
-        //        throw new InvalidOperationException("No milestones!");
-
-        //    return MilestonesCompleted >= TotalMilestones ? "Completed!" : "Not yet.";
-        //}
 
         public override string GetProgressDescription()
         {
@@ -65,14 +43,6 @@
     {
         public bool IsCompleted { get; set; }
         public DateTime CompletionDate { get; set; }
-
-        //public override string getProgress()
-        //{
-        //    if (!IsCompleted)
-        //        throw new Exception("Goal not completed yet.");
-
-        //    return JsonConvert.SerializeObject(this);
-        //}
 
         public override string GetProgressDescription()
         {
