@@ -6,6 +6,7 @@ namespace CareerTrack.Models
 {
     public class Goal
     {
+        [Required]
         public int Id { get; set; }
 
         [Required, MaxLength(100)]
