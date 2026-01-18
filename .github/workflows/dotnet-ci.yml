@@ -218,6 +218,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       SONAR_CI_SCAN: ${{ vars.SONAR_CI_SCAN }}
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -241,7 +242,7 @@ jobs:
             /k:"${{ vars.SONAR_PROJECT_KEY }}" \
             /o:"${{ vars.SONAR_ORGANIZATION }}" \
             /d:sonar.host.url="${{ vars.SONAR_HOST_URL }}" \
-            /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
+            /d:sonar.token="SONAR_TOKEN"
 
       - name: Build
         run: dotnet build --no-restore --configuration Release
