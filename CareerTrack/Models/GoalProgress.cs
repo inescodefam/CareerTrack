@@ -7,7 +7,7 @@
         public int Id { get; set; }
         public int GoalId { get; set; }
         public int UserId { get; set; }
-        public GoalProgressData progressData { get; set; }
+        public GoalProgressData? progressData { get; set; }
         public string? Notes { get; set; }
 
         public abstract string GetProgressDescription();
