@@ -54,8 +54,8 @@ namespace CareerTrack.Tests.UnitTests.Services
             // Assert
             var progress = _context.GoalProgress.FirstOrDefault(p => p.GoalId == goalId && p.UserId == userId);
             progress.Should().NotBeNull();
-            progress!.progressData.ProgressPercentage.Should().Be(0);
-            progress.Notes.Should().Be("Goal created");
+            progress?.progressData?.ProgressPercentage.Should().Be(0);
+            progress?.Notes.Should().Be("Goal created");
         }
 
         [Fact]
@@ -72,8 +72,8 @@ namespace CareerTrack.Tests.UnitTests.Services
 
             // Assert
             var progress = _context.GoalProgress.FirstOrDefault(p => p.GoalId == goalId && p.UserId == userId);
-            progress!.progressData.LastUpdated.Should().BeOnOrAfter(before);
-            progress.progressData.LastUpdated.Should().BeOnOrBefore(after);
+            progress?.progressData?.LastUpdated.Should().BeOnOrAfter(before);
+            progress?.progressData?.LastUpdated.Should().BeOnOrBefore(after);
         }
 
         [Fact]
@@ -158,7 +158,7 @@ namespace CareerTrack.Tests.UnitTests.Services
 
             // Assert
             var progress = _progressService.GetProgress(goalId, userId);
-            progress!.progressData.ProgressPercentage.Should().Be(50);
+            progress?.progressData?.ProgressPercentage.Should().Be(50);
         }
 
         [Fact]
@@ -176,8 +176,8 @@ namespace CareerTrack.Tests.UnitTests.Services
 
             // Assert
             var progress = _progressService.GetProgress(goalId, userId);
-            progress!.progressData.LastUpdated.Should().BeOnOrAfter(before);
-            progress.progressData.LastUpdated.Should().BeOnOrBefore(after);
+            progress?.progressData?.LastUpdated.Should().BeOnOrAfter(before);
+            progress?.progressData?.LastUpdated.Should().BeOnOrBefore(after);
         }
 
         [Fact]
@@ -193,7 +193,7 @@ namespace CareerTrack.Tests.UnitTests.Services
 
             // Assert
             var progress = _progressService.GetProgress(goalId, userId);
-            progress!.Notes.Should().Be("Halfway there!");
+            progress?.Notes.Should().Be("Halfway there!");
         }
 
         [Fact]
@@ -401,13 +401,13 @@ namespace CareerTrack.Tests.UnitTests.Services
             // Each UpdateProgress creates a NEW history entry
             // So we have: initial record (updated to 75%) + 3 history entries (75%, 50%, 25%)
             history.Count.Should().BeGreaterThanOrEqualTo(3);
-            history.Should().Contain(h => h.progressData.ProgressPercentage == 75);
-            history.Should().Contain(h => h.progressData.ProgressPercentage == 50);
-            history.Should().Contain(h => h.progressData.ProgressPercentage == 25);
+            history.Should().Contain(h => h.progressData!.ProgressPercentage == 75);
+            history.Should().Contain(h => h.progressData!.ProgressPercentage == 50);
+            history.Should().Contain(h => h.progressData!.ProgressPercentage == 25);
             // Verify descending order
             for (int i = 0; i < history.Count - 1; i++)
             {
-                history[i].progressData.LastUpdated.Should().BeOnOrAfter(history[i + 1].progressData.LastUpdated);
+                history[i].progressData?.LastUpdated.Should().BeOnOrAfter(history[i + 1].progressData!.LastUpdated);
             }
         }
 

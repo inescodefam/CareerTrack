@@ -125,7 +125,7 @@ namespace CareerTrack.Tests.UnitTests.ViewModels
             Assert.Empty(validationResults);
         }
 
-        private static IList<ValidationResult> ValidateModel(object model)
+        private static List<ValidationResult> ValidateModel(object model)
         {
             var validationResults = new List<ValidationResult>();
             var validationContext = new ValidationContext(model, null, null);
