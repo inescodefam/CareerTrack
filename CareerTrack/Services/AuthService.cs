@@ -19,12 +19,12 @@ namespace CareerTrack.Services
             _roleResolver = roleResolver;
         }
 
-        public async Task<AuthResult> LoginAsync(UserLoginVM loginVM)
+        public async Task<AuthResult> LoginAsync(UserLoginVM userLoginVM)
         {
             const string genericLoginError = "Incorrect username or password";
 
-            var username = (loginVM.Username ?? "").Trim();
-            var password = loginVM.Password ?? "";
+            var username = (userLoginVM.Username ?? "").Trim();
+            var password = userLoginVM.Password ?? "";
 
 
             if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
@@ -32,7 +32,7 @@ namespace CareerTrack.Services
 
 
             var user = await _users.FindByUsernameAsync(username);
-            if(user == null)
+            if (user == null)
             {
                 return new(false, genericLoginError, null);
             }
@@ -46,18 +46,18 @@ namespace CareerTrack.Services
             string role = _roleResolver.ResolveRole(user);
             await _cookie.SignInAsync(user, role);
 
-            return new(true, null, loginVM.ReturnUrl ?? "/");
+            return new(true, null, userLoginVM.ReturnUrl ?? "/");
         }
 
         public async Task LogoutAsync()
         {
-           await _cookie.SignOutAsync();
+            await _cookie.SignOutAsync();
         }
 
-        public async Task<AuthResult> RegisterAsync(UserRegisterVM registerVM)
+        public async Task<AuthResult> RegisterAsync(UserRegisterVM vm)
         {
-            var username = (registerVM.Username ?? "").Trim();
-            var email = (registerVM.Email ?? "").Trim();
+            var username = (vm.Username ?? "").Trim();
+            var email = (vm.Email ?? "").Trim();
 
             if (await _users.ExistsByUsernameAsync(username))
                 return new(false, $"Username {username} is already taken", null);
@@ -67,17 +67,17 @@ namespace CareerTrack.Services
 
 
             var salt = PasswordHashProvider.GetSalt();
-            var hash = PasswordHashProvider.GetHash(registerVM.Password, salt);
+            var hash = PasswordHashProvider.GetHash(vm.Password, salt);
 
             var newUser = new User
             {
-                FirstName = registerVM.FirstName,
-                LastName = registerVM.LastName,
+                FirstName = vm.FirstName,
+                LastName = vm.LastName,
                 UserName = username,
                 Email = email,
                 PasswordSalt = salt,
                 PasswordHash = hash,
-                Phone = string.IsNullOrWhiteSpace(registerVM.Phone) ? null : registerVM.Phone.Trim(),
+                Phone = string.IsNullOrWhiteSpace(vm.Phone) ? null : vm.Phone.Trim(),
                 IsAdmin = false
             };
 

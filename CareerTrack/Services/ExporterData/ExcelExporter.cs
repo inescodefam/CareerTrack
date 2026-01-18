@@ -7,7 +7,7 @@
         public string FormatName => "Excel";
         public string ContentType => "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
 
-        public byte[] Export(ExportData data) // kako bi bilo da nije ISP
+        public static byte[] Export(ExportData data) // kako bi bilo da nije ISP
         {
             var csv = GenerateCsvContent(data);
             return System.Text.Encoding.UTF8.GetBytes(csv);
@@ -18,7 +18,7 @@
             throw new NotImplementedException();
         }
 
-        private string GenerateCsvContent(ExportData data)
+        private static string GenerateCsvContent(ExportData data)
         {
             var sb = new System.Text.StringBuilder();
             sb.AppendLine("Goal Name,Owner,Start Date,Target Date,Progress");
