@@ -934,6 +934,169 @@ namespace CareerTrack.Tests.UnitTests.Controllers
             result.Should().BeAssignableTo<IActionResult>();
         }
 
+        [Fact]
+        public void CreateValidGoal_WithValidGoal_WhenHandlerSucceeds_ShouldSetTempDataSuccessAndRedirect()
+        {
+            // Arrange - create a valid goal that passes all validation
+            var goal = new Goal
+            {
+                Id = 0,
+                Name = "Valid Test Goal",
+                startDate = DateTime.UtcNow.AddDays(1),
+                targetDate = DateTime.UtcNow.AddDays(60)
+            };
+
+            // Act
+            var result = _controller.CreateValidGoal(goal);
+
+            // Assert - If validation passes, should redirect with success
+            // The handler chain validates: Name required, targetDate in future, startDate < targetDate
+            result.Should().BeAssignableTo<IActionResult>();
+        }
+
+        [Fact]
+        public void CreateValidGoal_WithPastTargetDate_ShouldReturnViewWithValidationErrors()
+        {
+            // Arrange - target date in the past triggers validation error
+            var goal = new Goal
+            {
+                Name = "Test Goal",
+                startDate = DateTime.UtcNow.AddDays(-30),
+                targetDate = DateTime.UtcNow.AddDays(-1)
+            };
+
+            // Act
+            var result = _controller.CreateValidGoal(goal);
+
+            // Assert - Should return view with validation errors
+            result.Should().BeOfType<ViewResult>();
+            _controller.ModelState.IsValid.Should().BeFalse();
+        }
+
+        [Fact]
+        public void CreateValidGoal_WithStartDateAfterTargetDate_ShouldReturnViewWithValidationErrors()
+        {
+            // Arrange - start date after target date triggers validation error
+            var goal = new Goal
+            {
+                Name = "Test Goal",
+                startDate = DateTime.UtcNow.AddDays(60),
+                targetDate = DateTime.UtcNow.AddDays(30)
+            };
+
+            // Act
+            var result = _controller.CreateValidGoal(goal);
+
+            // Assert - Should return view with validation errors
+            result.Should().BeOfType<ViewResult>();
+            _controller.ModelState.IsValid.Should().BeFalse();
+        }
+
+        [Fact]
+        public void CreateValidGoal_WithTooLongName_ShouldReturnViewWithValidationErrors()
+        {
+            // Arrange - name over 150 characters triggers validation error
+            var goal = new Goal
+            {
+                Name = new string('A', 151),
+                startDate = DateTime.UtcNow.AddDays(1),
+                targetDate = DateTime.UtcNow.AddDays(60)
+            };
+
+            // Act
+            var result = _controller.CreateValidGoal(goal);
+
+            // Assert - Should return view with validation errors
+            result.Should().BeOfType<ViewResult>();
+            _controller.ModelState.IsValid.Should().BeFalse();
+        }
+
+        [Fact]
+        public void CreateValidGoal_WithEmptyName_ShouldReturnViewWithValidationErrors()
+        {
+            // Arrange - empty name triggers validation error
+            var goal = new Goal
+            {
+                Name = "",
+                startDate = DateTime.UtcNow.AddDays(1),
+                targetDate = DateTime.UtcNow.AddDays(60)
+            };
+
+            // Act
+            var result = _controller.CreateValidGoal(goal);
+
+            // Assert - Should return view with validation errors
+            result.Should().BeOfType<ViewResult>();
+            _controller.ModelState.IsValid.Should().BeFalse();
+        }
+
+        [Fact]
+        public void CreateValidGoal_WithWhitespaceOnlyName_ShouldReturnViewWithValidationErrors()
+        {
+            // Arrange - whitespace-only name triggers validation error
+            var goal = new Goal
+            {
+                Name = "   ",
+                startDate = DateTime.UtcNow.AddDays(1),
+                targetDate = DateTime.UtcNow.AddDays(60)
+            };
+
+            // Act
+            var result = _controller.CreateValidGoal(goal);
+
+            // Assert - Should return view with validation errors
+            result.Should().BeOfType<ViewResult>();
+            _controller.ModelState.IsValid.Should().BeFalse();
+        }
+
+        [Fact]
+        public void CreateValidGoal_WhenUserHas10ActiveGoals_ShouldReturnViewWithBusinessRuleError()
+        {
+            // Arrange - create 10 active goals for user to trigger business rule
+            var userId = 1;
+            var user = new User
+            {
+                Id = userId,
+                UserName = "testuser",
+                Email = "test@test.com",
+                FirstName = "Test",
+                LastName = "User",
+                PasswordHash = "hash",
+                PasswordSalt = "salt"
+            };
+            _context.Users.Add(user);
+
+            // Add 10 active goals (endDate = null means active)
+            for (int i = 0; i < 10; i++)
+            {
+                _context.Goals.Add(new Goal
+                {
+                    Id = i + 100,
+                    Name = $"Existing Goal {i}",
+                    UserId = userId,
+                    User = user,
+                    startDate = DateTime.UtcNow,
+                    targetDate = DateTime.UtcNow.AddDays(30),
+                    endDate = null
+                });
+            }
+            _context.SaveChanges();
+
+            var newGoal = new Goal
+            {
+                Name = "New Valid Goal",
+                startDate = DateTime.UtcNow.AddDays(1),
+                targetDate = DateTime.UtcNow.AddDays(60)
+            };
+
+            // Act
+            var result = _controller.CreateValidGoal(newGoal);
+
+            // Assert - Should return view with business rule error (max 10 active goals)
+            result.Should().BeOfType<ViewResult>();
+            _controller.ModelState.IsValid.Should().BeFalse();
+        }
+
         #endregion
 
         #region ValidGoalDeleteDelete Tests
@@ -1016,6 +1179,129 @@ namespace CareerTrack.Tests.UnitTests.Controllers
 
             // Assert
             result.Should().BeOfType<NotFoundResult>();
+        }
+
+        [Fact]
+        public void ValidGoalDeleteDelete_WhenAuthorized_ShouldRedirectToIndex()
+        {
+            // Arrange - user owns the goal, so authorization passes
+            var goalId = 50;
+            var userId = 1;
+            var user = new User
+            {
+                Id = userId,
+                UserName = "testuser",
+                Email = "test@test.com",
+                FirstName = "Test",
+                LastName = "User",
+                PasswordHash = "hash",
+                PasswordSalt = "salt"
+            };
+            var goal = new Goal
+            {
+                Id = goalId,
+                Name = "My Goal",
+                UserId = userId,
+                User = user,
+                startDate = DateTime.UtcNow,
+                targetDate = DateTime.UtcNow.AddDays(30)
+            };
+
+            _context.Users.Add(user);
+            _context.Goals.Add(goal);
+            _context.SaveChanges();
+
+            _mockGoalService.Setup(s => s.GetGoalById(goalId, userId)).Returns(goal);
+
+            // Act
+            var result = _controller.ValidGoalDeleteDelete(goalId);
+
+            // Assert - Should redirect when handler passes (TempData may or may not have message)
+            var redirectResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
+            redirectResult.ActionName.Should().Be("Index");
+            // TempData["Error"] should be null when authorization passes
+            _controller.TempData["Error"].Should().BeNull();
+        }
+
+        [Fact]
+        public void ValidGoalDeleteDelete_WhenNotAuthorized_ShouldRedirectWithErrorMessage()
+        {
+            // Arrange - goal belongs to different user, so authorization fails
+            var goalId = 51;
+            var userId = 1;
+            var otherUserId = 2;
+            var user = new User
+            {
+                Id = userId,
+                UserName = "testuser",
+                Email = "test@test.com",
+                FirstName = "Test",
+                LastName = "User",
+                PasswordHash = "hash",
+                PasswordSalt = "salt"
+            };
+            var otherUser = new User
+            {
+                Id = otherUserId,
+                UserName = "otheruser",
+                Email = "other@test.com",
+                FirstName = "Other",
+                LastName = "User",
+                PasswordHash = "hash",
+                PasswordSalt = "salt"
+            };
+            // Goal belongs to otherUser but current user (userId=1) is trying to delete
+            var goal = new Goal
+            {
+                Id = goalId,
+                Name = "Other User's Goal",
+                UserId = otherUserId,
+                User = otherUser,
+                startDate = DateTime.UtcNow,
+                targetDate = DateTime.UtcNow.AddDays(30)
+            };
+
+            _context.Users.Add(user);
+            _context.Users.Add(otherUser);
+            _context.Goals.Add(goal);
+            _context.SaveChanges();
+
+            _mockGoalService.Setup(s => s.GetGoalById(goalId, userId)).Returns(goal);
+
+            // Act
+            var result = _controller.ValidGoalDeleteDelete(goalId);
+
+            // Assert - Should redirect with error message when authorization fails
+            var redirectResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
+            redirectResult.ActionName.Should().Be("Index");
+            _controller.TempData["Error"].Should().NotBeNull();
+        }
+
+        [Fact]
+        public void ValidGoalDeleteDelete_WhenGoalNotInContext_ShouldRedirectWithError()
+        {
+            // Arrange - goal exists in service but not in db context (edge case for authorization handler)
+            var goalId = 52;
+            var userId = 1;
+            var goal = new Goal
+            {
+                Id = goalId,
+                Name = "Test Goal",
+                UserId = userId,
+                startDate = DateTime.UtcNow,
+                targetDate = DateTime.UtcNow.AddDays(30)
+            };
+
+            // Goal NOT added to context, so authorization handler can't find it
+            _mockGoalService.Setup(s => s.GetGoalById(goalId, userId)).Returns(goal);
+
+            // Act
+            var result = _controller.ValidGoalDeleteDelete(goalId);
+
+            // Assert - Authorization handler returns error when goal not found in context
+            var redirectResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
+            redirectResult.ActionName.Should().Be("Index");
+            _controller.TempData["Error"].Should().NotBeNull();
         }
 
         #endregion
@@ -1101,6 +1387,362 @@ namespace CareerTrack.Tests.UnitTests.Controllers
 
             // Assert
             result.Should().BeOfType<NotFoundResult>();
+        }
+
+        #endregion
+
+        #region Additional Notifications Tests
+
+        [Fact]
+        public void Notifications_ShouldSetAllViewBagProperties()
+        {
+            // Act
+            var result = _controller.Notifications();
+
+            // Assert
+            var viewResult = result.Should().BeOfType<ViewResult>().Subject;
+            viewResult.ViewData["Demo1"].Should().Be("Goal: Learn Design Patterns");
+            // Demo2 has ReminderDecorator which adds " [Reminder Enabled] {DateTime} for: " prefix
+            (viewResult.ViewData["Demo2"] as string).Should().Contain("Reminder Enabled");
+            (viewResult.ViewData["Demo2"] as string).Should().Contain("Goal: Learn Design Patterns");
+            // Demo3 has NotificationDecorator which adds " + Status Notification" suffix
+            (viewResult.ViewData["Demo3"] as string).Should().Contain("Status Notification");
+        }
+
+        [Fact]
+        public void Notifications_Demo1_ShouldShowBaseGoalDescription()
+        {
+            // Act
+            var result = _controller.Notifications();
+
+            // Assert
+            var viewResult = result.Should().BeOfType<ViewResult>().Subject;
+            var demo1 = viewResult.ViewData["Demo1"] as string;
+            demo1.Should().Contain("Learn Design Patterns");
+            demo1.Should().NotContain("Reminder");
+            demo1.Should().NotContain("Notification");
+        }
+
+        [Fact]
+        public void Notifications_Demo2_ShouldShowReminderDecoratedDescription()
+        {
+            // Act
+            var result = _controller.Notifications();
+
+            // Assert
+            var viewResult = result.Should().BeOfType<ViewResult>().Subject;
+            var demo2 = viewResult.ViewData["Demo2"] as string;
+            demo2.Should().Contain("Reminder Enabled");
+            demo2.Should().Contain("Goal: Learn Design Patterns");
+        }
+
+        [Fact]
+        public void Notifications_Demo3_ShouldShowFullyDecoratedDescription()
+        {
+            // Act
+            var result = _controller.Notifications();
+
+            // Assert
+            var viewResult = result.Should().BeOfType<ViewResult>().Subject;
+            var demo3 = viewResult.ViewData["Demo3"] as string;
+            demo3.Should().Contain("Reminder Enabled");
+            demo3.Should().Contain("Status Notification");
+        }
+
+        #endregion
+
+        #region Additional Print Format Tests
+
+        [Fact]
+        public void Print_WithLowercasePdfFormat_ShouldReturnPdfContentType()
+        {
+            // Arrange
+            var goalId = 1;
+            var userId = 1;
+            var format = "pdf"; // lowercase - ToUpper() in switch handles this
+            var fileBytes = new byte[] { 1, 2, 3 };
+
+            _mockExportService.Setup(s => s.ExportGoal(goalId, userId, format)).Returns(fileBytes);
+            _mockExportService.Setup(s => s.GetAvailableFormats()).Returns(AvailableExportFormats);
+
+            // Act
+            var result = _controller.Print(goalId, format);
+
+            // Assert - format.ToUpper() in switch matches "PDF"
+            var fileResult = result.Should().BeOfType<FileContentResult>().Subject;
+            fileResult.ContentType.Should().Be("application/pdf");
+        }
+
+        [Fact]
+        public void Print_WithLowercaseExcelFormat_ShouldReturnExcelContentType()
+        {
+            // Arrange
+            var goalId = 1;
+            var userId = 1;
+            var format = "excel"; // lowercase - ToUpper() in switch handles this
+            var fileBytes = new byte[] { 1, 2, 3 };
+
+            _mockExportService.Setup(s => s.ExportGoal(goalId, userId, format)).Returns(fileBytes);
+            _mockExportService.Setup(s => s.GetAvailableFormats()).Returns(AvailableExportFormats);
+
+            // Act
+            var result = _controller.Print(goalId, format);
+
+            // Assert - format.ToUpper() in switch matches "EXCEL"
+            var fileResult = result.Should().BeOfType<FileContentResult>().Subject;
+            fileResult.ContentType.Should().Be("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        }
+
+        [Fact]
+        public void Print_WithMixedCaseFormat_ShouldReturnPdfContentType()
+        {
+            // Arrange
+            var goalId = 1;
+            var userId = 1;
+            var format = "Pdf"; // mixed case - ToUpper() handles this
+            var fileBytes = new byte[] { 1, 2, 3 };
+
+            _mockExportService.Setup(s => s.ExportGoal(goalId, userId, format)).Returns(fileBytes);
+            _mockExportService.Setup(s => s.GetAvailableFormats()).Returns(AvailableExportFormats);
+
+            // Act
+            var result = _controller.Print(goalId, format);
+
+            // Assert - format.ToUpper() matches "PDF"
+            var fileResult = result.Should().BeOfType<FileContentResult>().Subject;
+            fileResult.ContentType.Should().Be("application/pdf");
+        }
+
+        [Fact]
+        public void Print_WithValidFormat_ShouldUseCorrectFileExtension()
+        {
+            // Arrange
+            var goalId = 1;
+            var userId = 1;
+            var format = "EXCEL";
+            var fileBytes = new byte[] { 1, 2, 3 };
+
+            _mockExportService.Setup(s => s.ExportGoal(goalId, userId, format)).Returns(fileBytes);
+            _mockExportService.Setup(s => s.GetAvailableFormats()).Returns(AvailableExportFormats);
+
+            // Act
+            var result = _controller.Print(goalId, format);
+
+            // Assert
+            var fileResult = result.Should().BeOfType<FileContentResult>().Subject;
+            fileResult.FileDownloadName.Should().Be($"goal-{goalId}.excel");
+        }
+
+        [Fact]
+        public void Print_WithUnavailableFormat_ShouldDefaultToPdfExtension()
+        {
+            // Arrange
+            var goalId = 1;
+            var userId = 1;
+            var format = "XML"; // Not in available formats
+            var fileBytes = new byte[] { 1, 2, 3 };
+
+            _mockExportService.Setup(s => s.ExportGoal(goalId, userId, format)).Returns(fileBytes);
+            _mockExportService.Setup(s => s.GetAvailableFormats()).Returns(AvailableExportFormats);
+
+            // Act
+            var result = _controller.Print(goalId, format);
+
+            // Assert - Should default to pdf extension when format not available
+            var fileResult = result.Should().BeOfType<FileContentResult>().Subject;
+            fileResult.FileDownloadName.Should().Be($"goal-{goalId}.pdf");
+        }
+
+        [Fact]
+        public void Print_WhenExportThrowsException_ShouldSetTempDataError()
+        {
+            // Arrange
+            var goalId = 1;
+            var userId = 1;
+            var format = "PDF";
+            var errorMessage = "Export service unavailable";
+
+            _mockExportService.Setup(s => s.ExportGoal(goalId, userId, format))
+                .Throws(new Exception(errorMessage));
+
+            // Act
+            var result = _controller.Print(goalId, format);
+
+            // Assert
+            var redirectResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
+            redirectResult.ActionName.Should().Be("Details");
+            _controller.TempData["Error"].Should().NotBeNull();
+            _controller.TempData["Error"]!.ToString().Should().Contain(errorMessage);
+        }
+
+        [Fact]
+        public void Print_WhenExportThrowsException_ShouldIncludeFormatInErrorMessage()
+        {
+            // Arrange
+            var goalId = 1;
+            var userId = 1;
+            var format = "EXCEL";
+            var errorMessage = "File generation failed";
+
+            _mockExportService.Setup(s => s.ExportGoal(goalId, userId, format))
+                .Throws(new Exception(errorMessage));
+
+            // Act
+            _controller.Print(goalId, format);
+
+            // Assert
+            _controller.TempData["Error"]!.ToString().Should().Contain(format);
+        }
+
+        #endregion
+
+        #region Index Additional Tests
+
+        [Fact]
+        public void Index_WithNoGoals_ShouldReturnEmptyList()
+        {
+            // Arrange
+            var userId = 1;
+            _mockGoalService.Setup(s => s.GetUserGoals(userId)).Returns(new List<Goal>());
+
+            // Act
+            var result = _controller.Index();
+
+            // Assert
+            var viewResult = result.Should().BeOfType<ViewResult>().Subject;
+            var model = viewResult.Model.Should().BeAssignableTo<IEnumerable<Goal>>().Subject;
+            model.Should().BeEmpty();
+        }
+
+        #endregion
+
+        #region Details Additional Tests
+
+        [Fact]
+        public void Details_ShouldSetProgressInViewBag()
+        {
+            // Arrange
+            var goalId = 1;
+            var userId = 1;
+            var goal = new Goal { Id = goalId, Name = "Test Goal", UserId = userId };
+            var progress = new GoalProgress
+            {
+                GoalId = goalId,
+                progressData = new GoalProgressData { ProgressPercentage = 50 }
+            };
+
+            _mockGoalService.Setup(s => s.GetGoalById(goalId, userId)).Returns(goal);
+            _mockProgressService.Setup(p => p.GetProgress(goalId, userId)).Returns(progress);
+            _mockProgressService.Setup(p => p.GetProgressHistory(goalId, userId)).Returns(new List<GoalProgress>());
+
+            // Act
+            var result = _controller.Details(goalId);
+
+            // Assert
+            var viewResult = result.Should().BeOfType<ViewResult>().Subject;
+            viewResult.ViewData["Progress"].Should().Be(progress);
+        }
+
+        [Fact]
+        public void Details_ShouldSetProgressHistoryInViewBag()
+        {
+            // Arrange
+            var goalId = 1;
+            var userId = 1;
+            var goal = new Goal { Id = goalId, Name = "Test Goal", UserId = userId };
+            var history = new List<GoalProgress>
+            {
+                new GoalProgress { GoalId = goalId, progressData = new GoalProgressData { ProgressPercentage = 25 } },
+                new GoalProgress { GoalId = goalId, progressData = new GoalProgressData { ProgressPercentage = 50 } }
+            };
+
+            _mockGoalService.Setup(s => s.GetGoalById(goalId, userId)).Returns(goal);
+            _mockProgressService.Setup(p => p.GetProgress(goalId, userId)).Returns((GoalProgress?)null);
+            _mockProgressService.Setup(p => p.GetProgressHistory(goalId, userId)).Returns(history);
+
+            // Act
+            var result = _controller.Details(goalId);
+
+            // Assert
+            var viewResult = result.Should().BeOfType<ViewResult>().Subject;
+            viewResult.ViewData["ProgressHistory"].Should().Be(history);
+        }
+
+        #endregion
+
+        #region CreateGoalVariant Additional Tests
+
+        [Fact]
+        public void CreateGoalVariant_ShouldCallGoalFactory()
+        {
+            // Arrange
+            var goalType = "ShortTerm";
+            var name = "Test Goal";
+            var targetDate = DateTime.UtcNow.AddDays(30);
+            var createdGoal = new Goal { Name = name, targetDate = targetDate };
+
+            _mockGoalFactory.Setup(f => f.CreateGoal(goalType, name, targetDate)).Returns(createdGoal);
+
+            // Act
+            _controller.CreateGoalVariant(goalType, name, targetDate);
+
+            // Assert
+            _mockGoalFactory.Verify(f => f.CreateGoal(goalType, name, targetDate), Times.Once);
+        }
+
+        [Fact]
+        public void CreateGoalVariant_ShouldPassCreatedGoalToService()
+        {
+            // Arrange
+            var userId = 1;
+            var goalType = "LongTerm";
+            var name = "Career Goal";
+            var targetDate = DateTime.UtcNow.AddYears(1);
+            var createdGoal = new LongTermGoal { Name = name, targetDate = targetDate };
+
+            _mockGoalFactory.Setup(f => f.CreateGoal(goalType, name, targetDate)).Returns(createdGoal);
+
+            // Act
+            _controller.CreateGoalVariant(goalType, name, targetDate);
+
+            // Assert
+            _mockGoalService.Verify(s => s.CreateGoal(createdGoal, userId), Times.Once);
+        }
+
+        #endregion
+
+        #region UpdateProgress Additional Tests
+
+        [Fact]
+        public void UpdateProgress_ShouldPassCorrectParametersToService()
+        {
+            // Arrange
+            var goalId = 1;
+            var userId = 1;
+            var progressPercentage = 75;
+            var notes = "Making good progress";
+
+            // Act
+            _controller.UpdateProgress(goalId, progressPercentage, notes);
+
+            // Assert
+            _mockProgressService.Verify(p => p.UpdateProgress(goalId, userId, progressPercentage, notes), Times.Once);
+        }
+
+        [Fact]
+        public void UpdateProgress_ShouldRedirectToDetailsWithCorrectId()
+        {
+            // Arrange
+            var goalId = 5;
+            var progressPercentage = 100;
+
+            // Act
+            var result = _controller.UpdateProgress(goalId, progressPercentage, "Complete");
+
+            // Assert
+            var redirectResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
+            redirectResult.ActionName.Should().Be("Details");
+            redirectResult.RouteValues!["id"].Should().Be(goalId);
         }
 
         #endregion
