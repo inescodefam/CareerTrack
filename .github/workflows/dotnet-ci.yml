@@ -239,7 +239,7 @@ jobs:
       - name: SonarQube Analysis
         run: |
           dotnet sonarscanner begin /k:"CareerTrack" \
-            /d:sonar.host.url="${{ var.SONAR_HOST_URL }}" \
+            /d:sonar.host.url="${{ vars.SONAR_HOST_URL }}" \
             /d:sonar.token="$SONAR_TOKEN" \
             /d:sonar.cs.opencover.reportsPaths="**/coverage.cobertura.xml"
           dotnet build
