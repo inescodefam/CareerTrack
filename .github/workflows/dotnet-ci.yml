@@ -236,6 +236,16 @@ jobs:
       - name: Restore dependencies
         run: dotnet restore
 
+      - name: SonarQube Analysis
+        run: |
+          dotnet sonarscanner begin /k:"CareerTrack" \
+            /d:sonar.host.url="${{ secrets.SONAR_HOST_URL }}" \
+            /d:sonar.token="${{ secrets.SONAR_TOKEN }}" \
+            /d:sonar.cs.opencover.reportsPaths="**/coverage.cobertura.xml"
+          dotnet build
+          dotnet test --collect:"XPlat Code Coverage"
+          dotnet sonarscanner end /d:sonar.token="$SONAR_TOKEN"
+
       - name: Begin SonarCloud analysis
         run: |
           dotnet sonarscanner begin \
