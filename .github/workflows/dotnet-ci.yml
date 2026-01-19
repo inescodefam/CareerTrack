@@ -213,12 +213,10 @@ jobs:
           echo "2. Get your token from https://app.snyk.io/account"
           echo "3. Add it as a secret named SNYK_TOKEN in repository settings"
 
-  # SonarQube code quality and security analysis
-  sonarqube:
+  # SonarCloud code quality and security analysis
+  sonarcloud:
     runs-on: ubuntu-latest
-    env:
-      SONAR_CI_SCAN: ${{ vars.SONAR_CI_SCAN }}
-      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+    if: ${{ vars.SONAR_CI_SCAN == 'true' }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -230,38 +228,39 @@ jobs:
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: 17
+          distribution: 'zulu'
+
       - name: Install SonarScanner for .NET
         run: dotnet tool install --global dotnet-sonarscanner
 
       - name: Restore dependencies
         run: dotnet restore
 
-      - name: SonarQube Analysis
-        run: |
-          dotnet sonarscanner begin /k:"CareerTrack" \
-            /o:"${{ vars.SONAR_ORGANIZATION }}" \
-            /d:sonar.host.url="${{ vars.SONAR_HOST_URL }}" \
-            /d:sonar.token="$SONAR_TOKEN" \
-            /d:sonar.cs.opencover.reportsPaths="**/coverage.cobertura.xml"
-          dotnet build
-          dotnet test --collect:"XPlat Code Coverage"
-          dotnet sonarscanner end /d:sonar.token="$SONAR_TOKEN"
-
       - name: Begin SonarCloud analysis
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
           dotnet sonarscanner begin \
             /k:"${{ vars.SONAR_PROJECT_KEY }}" \
             /o:"${{ vars.SONAR_ORGANIZATION }}" \
-            /d:sonar.host.url="${{ vars.SONAR_HOST_URL }}" \
-            /d:sonar.token="$SONAR_TOKEN"
+            /d:sonar.host.url="https://sonarcloud.io" \
+            /d:sonar.token="$SONAR_TOKEN" \
+            /d:sonar.cs.opencover.reportsPaths="**/coverage.cobertura.xml"
 
       - name: Build
-        run: dotnet build --no-restore --configuration Release
+        run: dotnet build --configuration Release
 
-      - name: End SonarQube analysis
-        run: dotnet sonarscanner end /d:sonar.token="$SONAR_TOKEN"
+      - name: Run tests with coverage
+        run: dotnet test --no-build --configuration Release --collect:"XPlat Code Coverage"
+
+      - name: End SonarCloud analysis
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: dotnet sonarscanner end /d:sonar.token="$SONAR_TOKEN"
 
   # Deploy to Render (only on master branch after tests pass)
   deploy-to-render:
