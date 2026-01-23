@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
 namespace CareerTrack.Controllers
@@ -43,8 +44,7 @@ namespace CareerTrack.Controllers
 
             var username = sentUserToLogin.Username.Trim();
 
-            var existingUser = _context.Users
-                .FirstOrDefault(u => u.UserName.Equals(username, StringComparison.CurrentCultureIgnoreCase));
+            var existingUser = _context.Users.FirstOrDefault(u => EF.Functions.Like(u.UserName, username));
 
 
             if (existingUser == null)

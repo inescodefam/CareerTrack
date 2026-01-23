@@ -8,10 +8,20 @@ using CareerTrack.Security;
 using CareerTrack.Services;
 using CareerTrack.Utilities;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+    options.KnownNetworks.Clear();
+    options.KnownProxies.Clear();
+});
+
+builder.Services.AddControllersWithViews();
 
 builder.Services.AddControllersWithViews();
 
@@ -28,6 +38,9 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IAuthCookieService, AuthCookieService>();
 
 builder.Services.AddScoped<IRoleResolver, DefaultRoleResolver>();
+
+
+var isProduction = builder.Environment.IsProduction();
 builder.Services
     .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
@@ -44,7 +57,9 @@ builder.Services
         // Cookie security
         options.Cookie.Name = ".CareerTrack.Auth";
         options.Cookie.HttpOnly = true;
-        options.Cookie.SecurePolicy = CookieSecurePolicy.Always; // <-- Secure flag always
+        options.Cookie.SecurePolicy = isProduction
+            ? CookieSecurePolicy.None  // Render handles HTTPS
+            : CookieSecurePolicy.Always; // <-- Secure flag always
         options.Cookie.SameSite = SameSiteMode.Strict;           // <-- CSRF hardening (Strict or Lax)
         options.Cookie.IsEssential = true;                       // avoids being blocked by consent features
     });
@@ -52,7 +67,9 @@ builder.Services
 builder.Services.AddAntiforgery(options =>
 {
     options.Cookie.HttpOnly = true;
-    options.Cookie.SecurePolicy = CookieSecurePolicy.Always; // <-- Secure flag
+    options.Cookie.SecurePolicy = isProduction
+        ? CookieSecurePolicy.None
+        : CookieSecurePolicy.Always; // <-- Secure flag
     options.Cookie.SameSite = SameSiteMode.Strict;           // or Lax
 });
 
@@ -91,6 +108,12 @@ if (!app.Environment.IsDevelopment())
     app.UseExceptionHandler("/Home/Error");
 }
 
+app.UseForwardedHeaders();
+if (!app.Environment.IsDevelopment())
+{
+    app.UseExceptionHandler("/Home/Error");
+    app.UseHsts();
+}
 app.UseHttpsRedirection();
 app.UseSecurityHeaders();
 app.UseStaticFiles();
